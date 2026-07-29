@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy Service Quote - WhatsApp Tool</title>
+    <style>
+        /* Simple & Clean Style */
+        body { font-family: sans-serif; background-color: #f4f4f9; margin: 0; padding: 10px; }
+        .box { max-width: 450px; margin: auto; background: white; border-radius: 10px; border: 1px solid #ddd; overflow: hidden; }
+        
+        /* Header */
+        .top { background: #25D366; color: white; padding: 20px; text-align: center; }
+        .top h1 { margin: 0; font-size: 22px; }
+        
+        /* Tabs */
+        .tabs { display: flex; border-bottom: 1px solid #ddd; }
+        .tab { flex: 1; padding: 15px; border: none; background: white; font-size: 16px; font-weight: bold; cursor: pointer; color: #666; }
+        .tab.active { color: #25D366; border-bottom: 3px solid #25D366; }
+        
+        /* Form Area */
+        .content { padding: 20px; display: none; }
+        .content.active { display: block; }
+        
+        /* Big Inputs for Easy Typing */
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: #333; }
+        input, select, textarea { 
+            width: 100%; padding: 15px; margin-bottom: 15px; 
+            border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box;
+        }
+        
+        /* Big Buttons */
+        .btn { 
+            width: 100%; padding: 18px; border: none; border-radius: 5px; 
+            font-size: 18px; font-weight: bold; cursor: pointer; 
+        }
+        .btn-green { background: #25D366; color: white; margin-top: 10px; }
+        .btn-blue { background: #128C7E; color: white; }
+        
+        /* Preview Section */
+        .result { background: #e9f7ef; padding: 15px; border-radius: 5px; border: 1px solid #25D366; margin-top: 20px; display: none; }
+        .result.show { display: block; }
+        .price { font-size: 26px; color: #128C7E; font-weight: bold; margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="top">
+        <h1>Easy Quote Tool</h1>
+        <p>Send Bill/Request on WhatsApp</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="openTab(event, 'customer')">👤 Customer</button>
+        <button class="tab" onclick="openTab(event, 'worker')">🔧 Worker</button>
+    </div>
+
+    <!-- CUSTOMER AREA -->
+    <div id="customer" class="content active">
+        <label>Select Work Type:</label>
+        <select id="c_type">
+            <option value="Plumbing">🚰 Plumber</option>
+            <option value="Electrical">⚡ Electrician</option>
+            <option value="Painting">🎨 Painter</option>
+            <option value="Mechanic">🔧 Mechanic</option>
+            <option value="Cleaning">🧹 Cleaner</option>
+            <option value="AC Repair">❄️ AC Tech</option>
+        </select>
+
+        <label>Describe Work (Simple):</label>
+        <textarea id="c_work" placeholder="What needs to be fixed?"></textarea>
+
+        <label>Your Budget (₹):</label>
+        <input type="number" id="c_price" placeholder="Amount you will pay">
+
+        <button class="btn btn-blue" onclick="makeQuote('cust')">Show Summary</button>
+
+        <div id="c_res" class="result">
+            <p><strong>Work:</strong> <span id="r_c_work"></span></p>
+            <div class="price">Budget: ₹<span id="r_c_price"></span></div>
+            <button class="btn btn-green" onclick="sendWA('cust')">📱 Send on WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- WORKER AREA -->
+    <div id="worker" class="content">
+        <label>Your Name/Shop:</label>
+        <input type="text" id="w_name" placeholder="Enter your name">
+
+        <label>Work Done:</label>
+        <textarea id="w_work" placeholder="What work did you do?"></textarea>
+
+        <label>Total Bill (₹):</label>
+        <input type="number" id="w_price" placeholder="Enter total amount">
+
+        <button class="btn btn-blue" onclick="makeQuote('work')">Show Summary</button>
+
+        <div id="w_res" class="result">
+            <p><strong>From:</strong> <span id="r_w_name"></span></p>
+            <div class="price">Bill: ₹<span id="r_w_price"></span></div>
+            <button class="btn btn-green" onclick="sendWA('work')">📱 Send Bill to Customer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, content, tablinks;
+        content = document.getElementsByClassName("content");
+        for (i = 0; i < content.length; i++) { content[i].style.display = "none"; }
+        tablinks = document.getElementsByClassName("tab");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    let finalData = {};
+
+    function makeQuote(type) {
+        if(type === 'cust') {
+            finalData = {
+                type: document.getElementById('c_type').value,
+                work: document.getElementById('c_work').value,
+                price: document.getElementById('c_price').value
+            };
+            document.getElementById('r_c_work').innerText = finalData.work;
+            document.getElementById('r_c_price').innerText = finalData.price;
+            document.getElementById('c_res').classList.add('show');
+        } else {
+            finalData = {
+                name: document.getElementById('w_name').value,
+                work: document.getElementById('w_work').value,
+                price: document.getElementById('w_price').value
+            };
+            document.getElementById('r_w_name').innerText = finalData.name;
+            document.getElementById('r_w_price').innerText = finalData.price;
+            document.getElementById('w_res').classList.add('show');
+        }
+    }
+
+    function sendWA(type) {
+        let msg = "";
+        if(type === 'cust') {
+            msg = `*NEW SERVICE REQUEST*\n\n*Service:* ${finalData.type}\n*Work:* ${finalData.work}\n*Budget:* ₹${finalData.price}\n\nPlease reply if you can do this.`;
+        } else {
+            msg = `*SERVICE BILL*\n\n*From:* ${finalData.name}\n*Work Done:* ${finalData.work}\n*Total Amount:* ₹${finalData.price}\n\nThank you for the work!`;
+        }
+        window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+    }
+</script>
+
+</body>
+  </html>
+  
