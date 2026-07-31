@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
+    <title>QuickQuote Pro - Free Professional Invoice & Quote Generator</title>
+    <meta name="title" content="QuickQuote Pro - Free Professional Invoice & Quote Generator">
+    <meta name="description" content="Generate professional invoices, quotes, and bills in seconds. No signup required. Export as PDF or Image. Perfect for plumbers, electricians, and freelancers.">
+    <meta name="keywords" content="invoice generator, free bill maker, service quote generator, plumber invoice, electrician bill, professional receipts, whatsapp invoice">
+    <link rel="canonical" href="https://service-quote-generator.vercel.app/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://service-quote-generator.vercel.app/">
+    <meta property="og:title" content="QuickQuote Pro - Free Professional Invoice Generator">
+    <meta property="og:description" content="Generate professional invoices and quotes in seconds. No signup required. Export as PDF or Image.">
+    <meta property="og:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://service-quote-generator.vercel.app/">
+    <meta property="twitter:title" content="QuickQuote Pro - Free Professional Invoice Generator">
+    <meta property="twitter:description" content="Generate professional invoices and quotes in seconds. No signup required. Export as PDF or Image.">
+    <meta property="twitter:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#075e54">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22QuickQuote%20Pro%22,%22short_name%22:%22QuickQuote%22,%22start_url%22:%22.%22,%22display%22:%22standalone%22,%22background_color%22:%22%23ffffff%22,%22theme_color%22:%22%23075e54%22,%22icons%22:[{%22src%22:%22https://cdn-icons-png.flaticon.com/512/1041/1041916.png%22,%22sizes%22:%22512x512%22,%22type%22:%22image/png%22}]}">
+
+    <!-- Fonts & Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --brand-primary: #075e54;
+            --brand-secondary: #25D366;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #075e54 0%, #25D366 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .invoice-preview-container {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tab-active {
+            color: #075e54;
+            border-bottom: 3px solid #075e54;
+        }
+
+        .dark .tab-active {
+            color: #25D366;
+            border-bottom-color: #25D366;
+        }
+
+        /* Invoice styling */
+        #invoice-card {
+            width: 100%;
+            min-height: 700px;
+            background: white;
+            color: #1a1a1a;
+            padding: 40px;
+            position: relative;
+        }
+
+        .invoice-label { color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .invoice-value { color: #1e293b; font-size: 14px; font-weight: 500; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300">
+
+    <!-- Sticky Header -->
+    <header class="fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">Q</div>
+                <span class="text-xl font-extrabold tracking-tight dark:text-white">QuickQuote <span class="text-emerald-600">Pro</span></span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-yellow-400"></i>
+                </button>
+                <button id="installApp" class="hidden md:flex items-center gap-2 bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-all">
+                    <i data-lucide="download" class="w-4 h-4"></i> Install App
+                </button>
+                <button id="accountBtn" onclick="handleAccountClick()" class="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-emerald-700 transition-all">
+                    <i data-lucide="user" class="w-4 h-4"></i> <span id="accountBtnText">Login</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-sm relative">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-1 dark:text-white" id="auth-title">Sign In</h3>
+            <p class="text-sm text-slate-500 mb-6" id="auth-subtitle">Access your invoice history from any device.</p>
+            <div class="space-y-3">
+                <input type="email" id="auth-email" placeholder="Email" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                <input type="password" id="auth-password" placeholder="Password" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                <p id="auth-error" class="text-red-500 text-xs hidden"></p>
+                <button id="auth-submit-btn" onclick="submitAuth()" class="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all">Sign In</button>
+                <p class="text-center text-sm text-slate-500">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-emerald-600 font-bold hover:underline">Sign Up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Invoices Modal -->
+    <div id="invoices-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-lg relative max-h-[80vh] flex flex-col">
+            <button onclick="closeModal('invoices-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-4 dark:text-white">My Invoices</h3>
+            <div id="invoices-list" class="space-y-2 overflow-y-auto flex-1">
+                <p class="text-sm text-slate-400">Loading...</p>
+            </div>
+            <button onclick="logout()" class="mt-4 w-full py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50">Log Out</button>
+        </div>
+    </div>
+
+    <!-- Share Link Modal -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-sm relative">
+            <button onclick="closeModal('share-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i></div>
+                <h3 class="text-lg font-black dark:text-white">Invoice Saved!</h3>
+                <p class="text-sm text-slate-500">Anyone with this link will see this exact invoice.</p>
+            </div>
+            <div class="flex gap-2">
+                <input id="share-link-input" readonly class="flex-1 px-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono">
+                <button onclick="copyShareLink()" class="px-4 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-4 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold mb-6 uppercase tracking-wider">
+                <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Trusted by 50,000+ Pros
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 dark:text-white leading-tight">
+                Professional Invoices <br><span class="gradient-text">in Seconds.</span>
+            </h1>
+            <p class="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Create beautiful invoices, quotes & bills for any service business. Export PDF or Image instantly. No signup required.
+            </p>
+            
+            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-800">✓ No Signup</span>
+                <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-800">✓ 100% Free</span>
+                <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-800">✓ Export PDF</span>
+                <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-800">✓ WhatsApp Ready</span>
+                <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-sm font-medium border border-slate-200 dark:border-slate-800">✓ Works Offline</span>
+            </div>
+
+            <button onclick="scrollToApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl text-lg font-bold shadow-lg shadow-emerald-600/20 transition-all transform hover:-translate-y-1">
+                Start Creating Invoice
+            </button>
+        </div>
+    </section>
+
+    <!-- Main App Interface -->
+    <main id="app-interface" class="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        
+        <!-- Left: Form Controls -->
+        <div class="space-y-8">
+            <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex border-b border-slate-200 dark:border-slate-800 mb-8">
+                    <button onclick="switchTab('customer')" id="tab-customer" class="flex-1 pb-4 font-bold text-lg tab-active transition-all">Customer Request</button>
+                    <button onclick="switchTab('worker')" id="tab-worker" class="flex-1 pb-4 font-bold text-lg text-slate-400 transition-all">Worker Bill</button>
+                </div>
+
+                <div id="form-content" class="space-y-6">
+                    <!-- Dynamic fields based on tab -->
+                    <div id="common-fields" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Invoice Number</label>
+                            <input type="text" id="invoice_num" readonly class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Date</label>
+                            <input type="date" id="invoice_date" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div id="customer-fields" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Name *</label>
+                            <input type="text" id="c_name" placeholder="Enter customer name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Service Type</label>
+                                <select id="c_service" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Electrical">Electrical</option>
+                                    <option value="Painting">Painting</option>
+                                    <option value="Mechanic">Mechanic</option>
+                                    <option value="Cleaning">Cleaning</option>
+                                    <option value="AC Repair">AC Repair</option>
+                                    <option value="Carpentry">Carpentry</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Currency</label>
+                                <select id="c_currency" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="AED">AED - UAE Dirham</option>
+                                    <option value="SAR">SAR - Saudi Riyal</option>
+                                    <option value="QAR">QAR - Qatari Riyal</option>
+                                    <option value="KWD">KWD - Kuwaiti Dinar</option>
+                                    <option value="BHD">BHD - Bahraini Dinar</option>
+                                    <option value="OMR">OMR - Omani Rial</option>
+                                    <option value="JOD">JOD - Jordanian Dinar</option>
+                                    <option value="EGP">EGP - Egyptian Pound</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="PKR">PKR - Pakistani Rupee</option>
+                                    <option value="BDT">BDT - Bangladeshi Taka</option>
+                                    <option value="LKR">LKR - Sri Lankan Rupee</option>
+                                    <option value="NPR">NPR - Nepali Rupee</option>
+                                    <option value="IDR">IDR - Indonesian Rupiah</option>
+                                    <option value="PHP">PHP - Philippine Peso</option>
+                                    <option value="MYR">MYR - Malaysian Ringgit</option>
+                                    <option value="THB">THB - Thai Baht</option>
+                                    <option value="CNY">CNY - Chinese Yuan</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="ZAR">ZAR - South African Rand</option>
+                                    <option value="NGN">NGN - Nigerian Naira</option>
+                                    <option value="KES">KES - Kenyan Shilling</option>
+                                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                                    <option value="TRY">TRY - Turkish Lira</option>
+                                    <option value="BRL">BRL - Brazilian Real</option>
+                                    <option value="MXN">MXN - Mexican Peso</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="worker-fields" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Name</label>
+                                <input type="text" id="w_biz_name" placeholder="Your Business Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Worker Name</label>
+                                <input type="text" id="w_name" placeholder="Your Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Profession</label>
+                                <select id="w_profession" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                    <option value="Plumber">Plumber</option>
+                                    <option value="Electrician">Electrician</option>
+                                    <option value="Cleaner">Cleaner / House Cleaning</option>
+                                    <option value="AC Technician">AC Technician</option>
+                                    <option value="Painter">Painter</option>
+                                    <option value="Mechanic">Mechanic</option>
+                                    <option value="Carpenter">Carpenter</option>
+                                    <option value="Mason">Mason / Construction</option>
+                                    <option value="Welder">Welder</option>
+                                    <option value="Gardener">Gardener / Landscaper</option>
+                                    <option value="Handyman">Handyman</option>
+                                    <option value="Roofer">Roofer</option>
+                                    <option value="Pest Control">Pest Control</option>
+                                    <option value="Locksmith">Locksmith</option>
+                                    <option value="Solar Technician">Solar Technician</option>
+                                    <option value="CCTV Installer">CCTV / Security Installer</option>
+                                    <option value="Computer Repair">Computer / Mobile Repair</option>
+                                    <option value="Appliance Repair">Appliance Repair</option>
+                                    <option value="Tile Flooring">Tile / Flooring Worker</option>
+                                    <option value="Glass Installer">Glass / Window Installer</option>
+                                    <option value="Pool Cleaner">Pool Cleaner</option>
+                                    <option value="Interior Designer">Interior Designer</option>
+                                    <option value="House Shifting">House Shifting / Movers</option>
+                                    <option value="Driver">Driver</option>
+                                    <option value="Delivery Rider">Delivery Rider</option>
+                                    <option value="Security Guard">Security Guard</option>
+                                    <option value="Tailor">Tailor / Seamstress</option>
+                                    <option value="Barber">Barber / Hairdresser</option>
+                                    <option value="Beautician">Beautician / Makeup Artist</option>
+                                    <option value="Massage Therapist">Massage Therapist</option>
+                                    <option value="Photographer">Photographer</option>
+                                    <option value="Videographer">Videographer</option>
+                                    <option value="DJ Musician">DJ / Musician</option>
+                                    <option value="Event Planner">Event Planner</option>
+                                    <option value="Caterer">Caterer / Cook</option>
+                                    <option value="Babysitter">Babysitter / Nanny</option>
+                                    <option value="Laundry Service">Laundry Service</option>
+                                    <option value="Tutor">Tutor / Teacher</option>
+                                    <option value="Fitness Trainer">Fitness Trainer</option>
+                                    <option value="Farmer">Farmer / Agriculture Worker</option>
+                                    <option value="Construction Worker">Construction Laborer</option>
+                                    <option value="Graphic Designer">Graphic Designer</option>
+                                    <option value="Web Developer">Web Developer / IT</option>
+                                    <option value="Accountant">Accountant / Bookkeeper</option>
+                                    <option value="Consultant">Consultant</option>
+                                    <option value="Real Estate Agent">Real Estate Agent</option>
+                                    <option value="Business Services">Business / Company Services</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Currency</label>
+                                <select id="w_currency" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="AED">AED - UAE Dirham</option>
+                                    <option value="SAR">SAR - Saudi Riyal</option>
+                                    <option value="QAR">QAR - Qatari Riyal</option>
+                                    <option value="KWD">KWD - Kuwaiti Dinar</option>
+                                    <option value="BHD">BHD - Bahraini Dinar</option>
+                                    <option value="OMR">OMR - Omani Rial</option>
+                                    <option value="JOD">JOD - Jordanian Dinar</option>
+                                    <option value="EGP">EGP - Egyptian Pound</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="PKR">PKR - Pakistani Rupee</option>
+                                    <option value="BDT">BDT - Bangladeshi Taka</option>
+                                    <option value="LKR">LKR - Sri Lankan Rupee</option>
+                                    <option value="NPR">NPR - Nepali Rupee</option>
+                                    <option value="IDR">IDR - Indonesian Rupiah</option>
+                                    <option value="PHP">PHP - Philippine Peso</option>
+                                    <option value="MYR">MYR - Malaysian Ringgit</option>
+                                    <option value="THB">THB - Thai Baht</option>
+                                    <option value="CNY">CNY - Chinese Yuan</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="ZAR">ZAR - South African Rand</option>
+                                    <option value="NGN">NGN - Nigerian Naira</option>
+                                    <option value="KES">KES - Kenyan Shilling</option>
+                                    <option value="GHS">GHS - Ghanaian Cedi</option>
+                                    <option value="TRY">TRY - Turkish Lira</option>
+                                    <option value="BRL">BRL - Brazilian Real</option>
+                                    <option value="MXN">MXN - Mexican Peso</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Logo (Upload)</label>
+                            <input type="file" id="w_logo" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Signature (type your name)</label>
+                            <input type="text" id="w_signature" placeholder="e.g. John Smith" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" style="font-family: 'Brush Script MT', cursive;">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Payment Method</label>
+                            <select id="payment_method" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="PayPal">PayPal</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Work Details / Description</label>
+                        <textarea id="work_desc" rows="4" placeholder="Describe the work in detail..." class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Amount</label>
+                            <input type="number" id="amount" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Tax (%)</label>
+                            <input type="number" id="tax_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Discount (%)</label>
+                            <input type="number" id="discount_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Payment Status</label>
+                        <div class="flex gap-2">
+                            <button onclick="handleStatusClick('Paid')" class="status-btn flex-1 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Paid</button>
+                            <button onclick="handleStatusClick('Pending')" class="status-btn flex-1 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold bg-emerald-600 text-white border-emerald-600">Pending</button>
+                            <button onclick="handleStatusClick('Partial')" class="status-btn flex-1 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Partial</button>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6">
+                        <button onclick="resetForm()" class="flex-1 px-6 py-4 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Clear Form</button>
+                        <button onclick="generateAndScroll()" class="flex-[2] px-6 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all">Download & Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Live Preview -->
+        <div class="space-y-8">
+            <div class="sticky top-24">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold dark:text-white">Live Preview</h2>
+                    <div class="flex gap-2">
+                        <button onclick="switchTemplate('modern')" class="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold">Modern</button>
+                        <button onclick="switchTemplate('minimal')" class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Minimal</button>
+                    </div>
+                </div>
+
+                <!-- The Invoice Card -->
+                <div id="invoice-preview-container" class="invoice-preview-container rounded-2xl overflow-hidden animate-fade">
+                    <div id="invoice-card">
+                        <div class="flex justify-between items-start mb-10">
+                            <div id="biz-logo-preview" class="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center overflow-hidden">
+                                <i data-lucide="image" class="w-8 h-8 text-slate-300"></i>
+                            </div>
+                            <div class="text-right">
+                                <h3 id="prev-invoice-type" class="text-2xl font-black text-slate-900 uppercase tracking-tighter">INVOICE</h3>
+                                <p id="prev-invoice-num" class="text-slate-500 font-mono text-xs">INV-000000</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-10 mb-10">
+                            <div>
+                                <p class="invoice-label mb-1">From</p>
+                                <p id="prev-from-name" class="font-bold text-slate-900">Your Business Name</p>
+                                <p id="prev-from-prof" class="text-slate-500 text-xs">Professional Service</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="invoice-label mb-1">Bill To</p>
+                                <p id="prev-to-name" class="font-bold text-slate-900">Customer Name</p>
+                                <p id="prev-to-date" class="text-slate-500 text-xs">July 29, 2026</p>
+                            </div>
+                        </div>
+
+                        <div class="border-y border-slate-100 py-6 mb-10">
+                            <p class="invoice-label mb-3">Work Description</p>
+                            <p id="prev-desc" class="text-slate-700 leading-relaxed min-h-[80px]">No description provided yet...</p>
+                        </div>
+
+                        <div class="space-y-3 mb-10">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Subtotal</span>
+                                <span id="prev-subtotal" class="font-bold">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Tax (<span id="prev-tax-rate">0</span>%)</span>
+                                <span id="prev-tax-val" class="font-bold">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Discount (<span id="prev-disc-rate">0</span>%)</span>
+                                <span id="prev-disc-val" class="font-bold">-$0.00</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                                <span class="text-lg font-black uppercase">Grand Total</span>
+                                <span id="prev-total" class="text-3xl font-black text-emerald-600">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div id="signature-block" class="hidden border-t border-slate-100 pt-4 mb-6 text-right">
+                            <p id="prev-signature" class="text-2xl text-slate-800" style="font-family: 'Brush Script MT', cursive;"></p>
+                            <p class="invoice-label mt-1">Authorized Signature</p>
+                        </div>
+
+                        <div class="flex justify-between items-end">
+                            <div id="qrcode-container" class="opacity-80"></div>
+                            <div class="text-right">
+                                <div id="prev-status" class="inline-block px-4 py-1 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase mb-2">Pending</div>
+                                <p id="prev-pay-method" class="text-[10px] text-slate-400 font-bold uppercase mb-2"></p>
+                                <div class="watermark text-[10px] text-slate-300 font-bold uppercase tracking-widest">
+                                    service-quote-generator.vercel.app
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Controls -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-8">
+                    <button onclick="exportImage()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="image" class="w-4 h-4"></i> Save JPG</button>
+                    <button onclick="exportPDF()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i> Save PDF</button>
+                    <button onclick="shareNative()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="share-2" class="w-4 h-4"></i> Share All</button>
+                    <button onclick="shareWA()" class="flex items-center justify-center gap-2 p-3 bg-[#25D366] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</button>
+                    <button onclick="shareTG()" class="flex items-center justify-center gap-2 p-3 bg-[#0088cc] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="send" class="w-4 h-4"></i> Telegram</button>
+                    <button onclick="saveAndShare()" class="col-span-2 md:col-span-3 flex items-center justify-center gap-2 p-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="link" class="w-4 h-4"></i> Save & Get Shareable Link</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SEO Content Section -->
+    <section class="bg-white dark:bg-slate-950 py-20 px-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto space-y-16">
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold mb-4 dark:text-white">Professional Invoices for Every Trade</h2>
+                <p class="text-slate-600 dark:text-slate-400">Join thousands of professionals who use QuickQuote Pro to get paid faster.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold dark:text-white">Invoice for Plumbers</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Generate professional plumbing invoices on the spot. Add pipe repair details, fixture installations, and emergency service fees with one click. Send via WhatsApp instantly.</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold dark:text-white">Invoice for Electricians</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Create electrical service bills with detailed line items for wiring, circuit breaker fixes, and safety inspections. Professional layouts that build trust with your clients.</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold dark:text-white">Invoice for Cleaners</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Perfect for home and office cleaning services. Itemize deep cleaning, window washing, or recurring maintenance bills. Professional receipts delivered in seconds.</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold dark:text-white">Invoice for Mechanics</h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">Auto repair shops and mobile mechanics love our tool. Generate detailed bills for oil changes, engine repairs, and tire rotations with built-in tax and discount calculators.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-900 p-10 rounded-3xl space-y-8">
+                <h2 class="text-2xl font-bold text-center dark:text-white">Frequently Asked Questions</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="font-bold dark:text-white mb-2">Is it really free?</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Yes, QuickQuote Pro is 100% free with no hidden charges. You don't even need to create an account.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold dark:text-white mb-2">Can I use it offline?</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Yes! Once loaded, you can install it as a PWA on your phone and use it without an internet connection.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold dark:text-white mb-2">How do I share invoices?</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">You can download the invoice as a high-resolution JPG or PDF and share it via WhatsApp, Email, or Telegram.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-white py-12 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:row items-center justify-between gap-8">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">Q</div>
+                <span class="text-xl font-extrabold tracking-tight">QuickQuote <span class="text-emerald-600">Pro</span></span>
+            </div>
+            <div class="flex gap-8 text-sm font-medium text-slate-400">
+                <a href="#" class="hover:text-white">Privacy Policy</a>
+                <a href="#" class="hover:text-white">Terms of Service</a>
+                <a href="#" class="hover:text-white">Contact Us</a>
+            </div>
+            <p class="text-slate-500 text-xs">© 2026 QuickQuote Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Supabase Setup ---
+        const SUPABASE_URL = 'https://iudufhafmhwuqwheloix.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_Kxmbzt_uAvB2qISOodYSRg_DSatvfMK';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- State Management ---
+        let currentTab = 'customer';
+        let paymentStatus = 'Pending';
+        let currentTemplate = 'modern';
+        let logoBase64 = null;
+        let currentUser = null;
+        let currentInvoiceId = null;
+        let isAuthSignup = false;
+        let viewingSharedInvoice = false;
+
+        // --- Initialization ---
+        window.onload = async () => {
+            lucide.createIcons();
+            document.getElementById('invoice_date').valueAsDate = new Date();
+            setupEventListeners();
+
+            // Check Dark Mode
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Check auth session
+            const { data: { session } } = await supabase.auth.getSession();
+            currentUser = session ? session.user : null;
+            updateAccountUI();
+            supabase.auth.onAuthStateChange((event, session) => {
+                currentUser = session ? session.user : null;
+                updateAccountUI();
+            });
+
+            // Check if opening a shared invoice link
+            const params = new URLSearchParams(window.location.search);
+            const sharedId = params.get('id');
+            if (sharedId) {
+                await loadSharedInvoice(sharedId);
+            } else {
+                generateInvoiceNumber();
+                updatePreview();
+            }
+        };
+
+        // --- Auth Functions ---
+        function handleAccountClick() {
+            if (currentUser) {
+                openMyInvoices();
+            } else {
+                openModal('auth-modal');
+            }
+        }
+
+        function updateAccountUI() {
+            const btnText = document.getElementById('accountBtnText');
+            btnText.innerText = currentUser ? (currentUser.email.split('@')[0]) : 'Login';
+        }
+
+        function toggleAuthMode() {
+            isAuthSignup = !isAuthSignup;
+            document.getElementById('auth-title').innerText = isAuthSignup ? 'Sign Up' : 'Sign In';
+            document.getElementById('auth-submit-btn').innerText = isAuthSignup ? 'Create Account' : 'Sign In';
+            document.getElementById('auth-toggle-text').innerText = isAuthSignup ? 'Already have an account?' : "Don't have an account?";
+            document.getElementById('auth-toggle-btn').innerText = isAuthSignup ? 'Sign In' : 'Sign Up';
+        }
+
+        async function submitAuth() {
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const errorEl = document.getElementById('auth-error');
+            errorEl.classList.add('hidden');
+
+            if (!email || !password) {
+                errorEl.innerText = 'Please enter email and password.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const { data, error } = isAuthSignup
+                ? await supabase.auth.signUp({ email, password })
+                : await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errorEl.innerText = error.message;
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (isAuthSignup && data.user && !data.session) {
+                errorEl.classList.remove('hidden');
+                errorEl.classList.remove('text-red-500');
+                errorEl.classList.add('text-emerald-600');
+                errorEl.innerText = 'Account created! Check your email to confirm, then sign in.';
+                return;
+            }
+
+            currentUser = data.user;
+            updateAccountUI();
+            closeModal('auth-modal');
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            updateAccountUI();
+            closeModal('invoices-modal');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- My Invoices Dashboard ---
+        async function openMyInvoices() {
+            openModal('invoices-modal');
+            const listEl = document.getElementById('invoices-list');
+            listEl.innerHTML = '<p class="text-sm text-slate-400">Loading...</p>';
+
+            const { data, error } = await supabase
+                .from('invoices')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                listEl.innerHTML = `<p class="text-sm text-red-500">${error.message}</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                listEl.innerHTML = '<p class="text-sm text-slate-400">No saved invoices yet. Create one and hit "Save & Share".</p>';
+                return;
+            }
+
+            listEl.innerHTML = data.map(inv => `
+                <button onclick="window.location.href = window.location.pathname + '?id=${inv.id}'" class="w-full text-left p-3 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm dark:text-white">${inv.invoice_number || 'Invoice'}</p>
+                        <p class="text-xs text-slate-500">${inv.customer_name || 'No customer name'} • ${inv.status}</p>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-600">${getCurrencySymbol(inv.currency)}${parseFloat(inv.amount || 0).toFixed(2)}</span>
+                </button>
+            `).join('');
+        }
+
+        function setupEventListeners() {
+            const inputs = ['c_name', 'c_service', 'c_currency', 'w_biz_name', 'w_name', 'w_profession', 'w_currency', 'w_signature', 'payment_method', 'work_desc', 'amount', 'tax_rate', 'discount_rate', 'invoice_date'];
+            inputs.forEach(id => {
+                document.getElementById(id).addEventListener('input', updatePreview);
+            });
+
+            document.getElementById('w_logo').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    logoBase64 = reader.result;
+                    updatePreview();
+                };
+                if (file) reader.readAsDataURL(file);
+            });
+        }
+
+        // --- Logic Functions ---
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+
+        function generateInvoiceNumber() {
+            const date = new Date();
+            const dateStr = date.getFullYear() + String(date.getMonth() + 1).padStart(2, '0') + String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('invoice_num').value = `INV-${dateStr}-${random}`;
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-customer').classList.toggle('tab-active', tab === 'customer');
+            document.getElementById('tab-worker').classList.toggle('tab-active', tab === 'worker');
+            document.getElementById('tab-customer').classList.toggle('text-slate-400', tab !== 'customer');
+            document.getElementById('tab-worker').classList.toggle('text-slate-400', tab !== 'worker');
+            
+            document.getElementById('customer-fields').classList.toggle('hidden', tab !== 'customer');
+            document.getElementById('worker-fields').classList.toggle('hidden', tab !== 'worker');
+            
+            document.getElementById('prev-invoice-type').innerText = tab === 'customer' ? 'REQUEST' : 'INVOICE';
+            updatePreview();
+        }
+
+        function handleStatusClick(status) {
+            if (viewingSharedInvoice && currentInvoiceId) {
+                updateSharedStatus(status);
+            } else {
+                setStatus(status);
+            }
+        }
+
+        function setStatus(status) {
+            paymentStatus = status;
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
+                if (btn.innerText === status) {
+                    btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
+                }
+            });
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const data = getFormData();
+            
+            // Update Preview Text
+            document.getElementById('prev-invoice-num').innerText = data.invoiceNum;
+            document.getElementById('prev-to-date').innerText = new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('prev-desc').innerText = data.desc || 'No description provided...';
+            
+            if (currentTab === 'customer') {
+                document.getElementById('prev-from-name').innerText = 'QuickQuote User';
+                document.getElementById('prev-from-prof').innerText = 'Customer Request';
+                document.getElementById('prev-to-name').innerText = data.cName || 'Valued Provider';
+                document.getElementById('prev-invoice-type').innerText = 'SERVICE REQUEST';
+            } else {
+                document.getElementById('prev-from-name').innerText = data.wBizName || 'Your Business Name';
+                document.getElementById('prev-from-prof').innerText = data.wProf || 'Professional Service';
+                document.getElementById('prev-to-name').innerText = data.cName || 'Valued Customer';
+                document.getElementById('prev-invoice-type').innerText = 'OFFICIAL BILL';
+            }
+
+            // Logo
+            const logoPreview = document.getElementById('biz-logo-preview');
+            if (logoBase64) {
+                logoPreview.innerHTML = `<img src="${logoBase64}" class="w-full h-full object-cover">`;
+            } else {
+                logoPreview.innerHTML = `<i data-lucide="image" class="w-8 h-8 text-slate-300"></i>`;
+                lucide.createIcons();
+            }
+
+            // Calculations
+            const subtotal = parseFloat(data.amount) || 0;
+            const tax = (subtotal * (parseFloat(data.taxRate) || 0)) / 100;
+            const discount = (subtotal * (parseFloat(data.discRate) || 0)) / 100;
+            const total = subtotal + tax - discount;
+
+            const symbol = getCurrencySymbol(data.currency);
+            document.getElementById('prev-subtotal').innerText = `${symbol}${subtotal.toFixed(2)}`;
+            document.getElementById('prev-tax-rate').innerText = data.taxRate;
+            document.getElementById('prev-tax-val').innerText = `${symbol}${tax.toFixed(2)}`;
+            document.getElementById('prev-disc-rate').innerText = data.discRate;
+            document.getElementById('prev-disc-val').innerText = `-${symbol}${discount.toFixed(2)}`;
+            document.getElementById('prev-total').innerText = `${symbol}${total.toFixed(2)}`;
+
+            // Status
+            const statusEl = document.getElementById('prev-status');
+            statusEl.innerText = paymentStatus;
+            statusEl.className = `inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase mb-4 `;
+            if (paymentStatus === 'Paid') statusEl.classList.add('bg-emerald-100', 'text-emerald-700');
+            else if (paymentStatus === 'Pending') statusEl.classList.add('bg-amber-100', 'text-amber-700');
+            else statusEl.classList.add('bg-blue-100', 'text-blue-700');
+
+            document.getElementById('prev-pay-method').innerText = currentTab === 'worker' && data.paymentMethod ? 'via ' + data.paymentMethod : '';
+
+            // Signature (worker bills only)
+            const sigBlock = document.getElementById('signature-block');
+            if (currentTab === 'worker' && data.signature) {
+                sigBlock.classList.remove('hidden');
+                document.getElementById('prev-signature').innerText = data.signature;
+            } else {
+                sigBlock.classList.add('hidden');
+            }
+
+            // QR Code
+            generateQR();
+        }
+
+        function getFormData() {
+            return {
+                invoiceNum: document.getElementById('invoice_num').value,
+                date: document.getElementById('invoice_date').value,
+                cName: document.getElementById('c_name').value,
+                cService: document.getElementById('c_service').value,
+                currency: currentTab === 'customer' ? document.getElementById('c_currency').value : document.getElementById('w_currency').value,
+                wBizName: document.getElementById('w_biz_name').value,
+                wProf: document.getElementById('w_profession').value,
+                desc: document.getElementById('work_desc').value,
+                amount: document.getElementById('amount').value,
+                taxRate: document.getElementById('tax_rate').value,
+                discRate: document.getElementById('discount_rate').value,
+                signature: document.getElementById('w_signature').value,
+                paymentMethod: document.getElementById('payment_method').value
+            };
+        }
+
+        function getCurrencySymbol(curr) {
+            const symbols = {
+                USD: '$', EUR: '€', GBP: '£', CAD: '$', AUD: '$',
+                AED: 'dh', SAR: 'SR', QAR: 'QR', KWD: 'KD', BHD: 'BD', OMR: 'OR', JOD: 'JD', EGP: 'E£',
+                INR: '₹', PKR: 'Rs', BDT: '৳', LKR: 'Rs', NPR: 'Rs', IDR: 'Rp', PHP: '₱', MYR: 'RM', THB: '฿',
+                CNY: '¥', JPY: '¥',
+                ZAR: 'R', NGN: '₦', KES: 'KSh', GHS: 'GH₵',
+                TRY: '₺', BRL: 'R$', MXN: 'Mex$'
+            };
+            return symbols[curr] || '$';
+        }
+
+        function generateQR() {
+            const container = document.getElementById('qrcode-container');
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: "https://service-quote-generator.vercel.app/",
+                width: 60,
+                height: 60,
+                colorDark : "#075e54",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+
+        // --- Export Functions ---
+        async function exportImage() {
+            const element = document.getElementById('invoice-card');
+            const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+            const link = document.createElement('a');
+            link.download = `${document.getElementById('invoice_num').value}.jpg`;
+            link.href = canvas.toDataURL('image/jpeg', 0.95);
+            link.click();
+            resetAfterExport();
+        }
+
+        async function exportPDF() {
+            const element = document.getElementById('invoice-card');
+            const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`${document.getElementById('invoice_num').value}.pdf`);
+            resetAfterExport();
+        }
+
+        function resetAfterExport() {
+            setTimeout(() => {
+                if(confirm("Invoice downloaded! Would you like to clear the form for a new invoice?")) {
+                    resetForm();
+                }
+            }, 500);
+        }
+
+        function resetForm() {
+            const inputs = ['c_name', 'work_desc', 'amount', 'tax_rate', 'discount_rate', 'w_biz_name', 'w_name', 'w_signature'];
+            inputs.forEach(id => document.getElementById(id).value = id.includes('rate') || id === 'amount' ? '0' : '');
+            logoBase64 = null;
+            document.getElementById('w_logo').value = '';
+            generateInvoiceNumber();
+            updatePreview();
+        }
+
+        async function ensureSavedLink() {
+            if (currentInvoiceId && viewingSharedInvoice) {
+                return `${window.location.origin}${window.location.pathname}?id=${currentInvoiceId}`;
+            }
+            const saved = await saveInvoiceToDB();
+            if (!saved) return null;
+            return `${window.location.origin}${window.location.pathname}?id=${saved.id}`;
+        }
+
+        async function shareWA() {
+            const data = getFormData();
+            const symbol = getCurrencySymbol(data.currency);
+            const link = await ensureSavedLink();
+            if (!link) return;
+            const msg = `*${currentTab === 'customer' ? 'SERVICE REQUEST' : 'SERVICE BILL'}*\n\n*Invoice:* ${data.invoiceNum}\n*Amount:* ${symbol}${data.amount}\n*Details:* ${data.desc}\n\nView invoice: ${link}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        async function shareTG() {
+            const data = getFormData();
+            const link = await ensureSavedLink();
+            if (!link) return;
+            const msg = `Service Invoice: ${data.invoiceNum}\nAmount: ${data.amount}\nDetails: ${data.desc}`;
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // --- Save & Share (Database) ---
+        async function saveInvoiceToDB() {
+            const data = getFormData();
+            const symbol = getCurrencySymbol(data.currency);
+            const subtotal = parseFloat(data.amount) || 0;
+            const tax = (subtotal * (parseFloat(data.taxRate) || 0)) / 100;
+            const discount = (subtotal * (parseFloat(data.discRate) || 0)) / 100;
+            const total = subtotal + tax - discount;
+
+            const record = {
+                invoice_type: currentTab,
+                invoice_number: data.invoiceNum,
+                invoice_date: data.date,
+                business_name: data.wBizName,
+                worker_name: document.getElementById('w_name').value,
+                profession: data.wProf,
+                customer_name: data.cName,
+                service: data.cService,
+                description: data.desc,
+                amount: total,
+                tax_rate: data.taxRate,
+                discount_rate: data.discRate,
+                currency: data.currency,
+                status: paymentStatus,
+                payment_method: data.paymentMethod,
+                signature: data.signature
+            };
+
+            if (currentUser) record.user_id = currentUser.id;
+
+            let result;
+            if (currentInvoiceId) {
+                result = await supabase.from('invoices').update(record).eq('id', currentInvoiceId).select().single();
+            } else {
+                result = await supabase.from('invoices').insert(record).select().single();
+            }
+
+            if (result.error) {
+                alert('Could not save invoice: ' + result.error.message);
+                return null;
+            }
+            currentInvoiceId = result.data.id;
+            return result.data;
+        }
+
+        async function saveAndShare() {
+            const btn = event.target.closest('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = 'Saving...';
+            btn.disabled = true;
+
+            const saved = await saveInvoiceToDB();
+
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            lucide.createIcons();
+
+            if (!saved) return;
+
+            const link = `${window.location.origin}${window.location.pathname}?id=${saved.id}`;
+            document.getElementById('share-link-input').value = link;
+            openModal('share-modal');
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('share-link-input');
+            navigator.clipboard.writeText(input.value).then(() => alert('Link copied!'));
+        }
+
+        function copyLink() { saveAndShare(); }
+
+        function shareNative() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'QuickQuote Pro',
+                    text: 'Generate professional invoices in seconds!',
+                    url: 'https://service-quote-generator.vercel.app/'
+                });
+            } else {
+                copyLink();
+            }
+        }
+
+        // --- Shared Invoice View ---
+        async function loadSharedInvoice(id) {
+            viewingSharedInvoice = true;
+            currentInvoiceId = id;
+
+            const { data, error } = await supabase.rpc('get_invoice', { invoice_id: id });
+            if (error || !data || data.length === 0) {
+                alert('This invoice link is invalid or was removed.');
+                viewingSharedInvoice = false;
+                generateInvoiceNumber();
+                updatePreview();
+                return;
+            }
+
+            const inv = data[0];
+            currentTab = inv.invoice_type || 'worker';
+            paymentStatus = inv.status || 'Pending';
+
+            // Populate hidden form fields so getFormData()/updatePreview() work as-is
+            document.getElementById('invoice_num').value = inv.invoice_number || '';
+            document.getElementById('invoice_date').value = inv.invoice_date || '';
+            document.getElementById('c_name').value = inv.customer_name || '';
+            document.getElementById('c_service').value = inv.service || 'Other';
+            document.getElementById('c_currency').value = inv.currency || 'USD';
+            document.getElementById('w_biz_name').value = inv.business_name || '';
+            document.getElementById('w_name').value = inv.worker_name || '';
+            document.getElementById('w_profession').value = inv.profession || 'Other';
+            document.getElementById('w_currency').value = inv.currency || 'USD';
+            document.getElementById('w_signature').value = inv.signature || '';
+            document.getElementById('payment_method').value = inv.payment_method || 'Cash';
+            document.getElementById('work_desc').value = inv.description || '';
+            document.getElementById('amount').value = inv.amount || 0;
+            document.getElementById('tax_rate').value = inv.tax_rate || 0;
+            document.getElementById('discount_rate').value = inv.discount_rate || 0;
+
+            // Switch tab visuals without re-triggering a fresh invoice number
+            document.getElementById('customer-fields').classList.toggle('hidden', currentTab !== 'customer');
+            document.getElementById('worker-fields').classList.toggle('hidden', currentTab !== 'worker');
+            document.getElementById('tab-customer').classList.toggle('tab-active', currentTab === 'customer');
+            document.getElementById('tab-worker').classList.toggle('tab-active', currentTab === 'worker');
+
+            // Lock the form: this is a read-only shared view
+            document.querySelectorAll('#form-content input, #form-content select, #form-content textarea').forEach(el => el.setAttribute('disabled', 'true'));
+            document.querySelector('.flex.gap-4.pt-6').classList.add('hidden');
+
+            // Show status buttons as active/clickable so recipient/sender can update it
+            const banner = document.createElement('div');
+            banner.className = 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 text-xs text-emerald-700 dark:text-emerald-400 font-bold mb-4';
+            banner.innerText = "You're viewing a shared invoice. Use the buttons below the preview to update payment status.";
+            document.getElementById('form-content').prepend(banner);
+
+            updatePreview();
+        }
+
+        async function updateSharedStatus(status) {
+            paymentStatus = status;
+            if (currentUser) {
+                await supabase.from('invoices').update({ status }).eq('id', currentInvoiceId);
+            } else {
+                await supabase.rpc('update_guest_invoice', { invoice_id: currentInvoiceId, new_status: status, new_payment_method: null });
+            }
+            setStatus(status);
+        }
+
+        function scrollToApp() {
+            document.getElementById('app-interface').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateAndScroll() {
+            updatePreview();
+            document.getElementById('invoice-preview-container').scrollIntoView({ behavior: 'smooth' });
+            alert("Preview updated! Use the buttons below to Save or Share.");
+        }
+
+        // --- PWA Support ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installApp').classList.remove('hidden');
+        });
+
+        document.getElementById('installApp').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') deferredPrompt = null;
+            }
+        });
+
+        // Register Service Worker for Offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                    self.addEventListener('install', e => e.waitUntil(caches.open('qq-v1').then(c => c.addAll(['/']))));
+                    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));
+                `));
+            });
+        }
+    </script>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "QuickQuote Pro",
+      "url": "https://service-quote-generator.vercel.app/",
+      "description": "Professional Invoice and Quote Generator for service businesses.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+</body>
+</html>
