@@ -1,0 +1,80 @@
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --brand-primary: #075e54;
+            --brand-secondary: #25D366;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #075e54 0%, #25D366 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .invoice-preview-container {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tab-active {
+            color: #075e54;
+            border-bottom: 3px solid #075e54;
+            transition: color 0.25s ease, border-color 0.25s ease;
+        }
+
+        button {
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .dark .tab-active {
+            color: #25D366;
+            border-bottom-color: #25D366;
+        }
+
+        .minimal-template .gradient-text,
+        .minimal-template #prev-invoice-type { color: #1a1a1a !important; -webkit-text-fill-color: #1a1a1a !important; background: none !important; }
+        .minimal-template #prev-total { color: #1a1a1a !important; }
+
+        /* Invoice styling */
+        #invoice-card {
+            width: 100%;
+            min-height: 700px;
+            background: white;
+            color: #1a1a1a;
+            padding: 40px;
+            position: relative;
+        }
+
+        .invoice-label { color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .invoice-value { color: #1e293b; font-size: 14px; font-weight: 500; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease forwards; }
+    
