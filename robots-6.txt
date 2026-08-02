@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://service-quote-generator.vercel.app/sitemap.xml
