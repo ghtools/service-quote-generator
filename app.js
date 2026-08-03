@@ -73,11 +73,75 @@
         let currentInvoiceId = null;
         let isAuthSignup = false;
         let viewingSharedInvoice = false;
+        let showQR = true;
+        let lineItems = [{ id: 'item_1', desc: '', qty: 1, price: 0 }];
+
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function uid() { return 'item_' + Math.random().toString(36).slice(2, 9); }
+
+        function addItemRow() {
+            lineItems.push({ id: uid(), desc: '', qty: 1, price: 0 });
+            renderItemsForm();
+            recalcItemsTotal();
+            updatePreview();
+        }
+
+        function removeItemRow(id) {
+            if (lineItems.length <= 1) return;
+            lineItems = lineItems.filter((i) => i.id !== id);
+            renderItemsForm();
+            recalcItemsTotal();
+            updatePreview();
+        }
+
+        function updateItemField(id, field, value) {
+            const item = lineItems.find((i) => i.id === id);
+            if (!item) return;
+            item[field] = (field === 'qty' || field === 'price') ? (parseFloat(value) || 0) : value;
+            recalcItemsTotal();
+            const rowAmt = document.getElementById('row-amt-' + id);
+            if (rowAmt) rowAmt.innerText = (item.qty * item.price).toFixed(2);
+            updatePreview();
+        }
+
+        function recalcItemsTotal() {
+            const subtotal = lineItems.reduce((s, i) => s + (i.qty * i.price), 0);
+            const amtEl = document.getElementById('amount');
+            if (amtEl) amtEl.value = subtotal.toFixed(2);
+        }
+
+        function itemRowHTML(item) {
+            return `<div class="grid grid-cols-12 gap-2 items-center" data-item-row="${item.id}">
+                <input type="text" value="${escapeHtml(item.desc)}" placeholder="Item description" oninput="updateItemField('${item.id}','desc',this.value)" class="col-span-5 px-2 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none">
+                <input type="number" value="${item.qty}" min="0" oninput="updateItemField('${item.id}','qty',this.value)" class="col-span-2 px-2 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-center">
+                <input type="number" value="${item.price}" min="0" step="0.01" oninput="updateItemField('${item.id}','price',this.value)" class="col-span-2 px-2 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-right">
+                <span id="row-amt-${item.id}" class="col-span-2 text-sm font-bold text-right pr-1">${(item.qty * item.price).toFixed(2)}</span>
+                <button type="button" onclick="removeItemRow('${item.id}')" class="col-span-1 text-red-400 hover:text-red-600 flex justify-center"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            </div>`;
+        }
+
+        function renderItemsForm() {
+            const container = document.getElementById('items-form-container');
+            if (!container) return;
+            container.innerHTML = lineItems.map(itemRowHTML).join('');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function toggleQR() {
+            showQR = document.getElementById('show_qr_toggle').checked;
+            updatePreview();
+        }
 
         // --- Initialization ---
         window.onload = async () => {
             lucide.createIcons();
             populateDropdowns();
+            renderItemsForm();
+            recalcItemsTotal();
             document.getElementById('invoice_date').valueAsDate = new Date();
             setupEventListeners();
 
@@ -255,11 +319,13 @@
 
         function setupEventListeners() {
             const inputs = [
-                'c_name', 'c_phone', 'c_email', 'c_service', 'req_preferred_date', 'req_budget', 'req_description', 'req_notes',
-                'q_cust_name', 'q_profession', 'q_currency', 'q_valid_until', 'q_terms',
-                'inv_cust_name', 'inv_cust_phone', 'inv_cust_email', 'inv_due_date',
-                'w_biz_name', 'w_name', 'w_profession', 'w_currency', 'w_signature', 'payment_method',
-                'work_desc', 'amount', 'tax_rate', 'discount_rate', 'invoice_date'
+                'c_name', 'c_phone', 'c_email', 'c_service', 'req_preferred_date', 'req_budget', 'req_description', 'req_notes', 'req_priority',
+                'q_cust_name', 'q_profession', 'q_currency', 'q_valid_until', 'q_terms', 'notes',
+                'inv_cust_name', 'inv_cust_phone', 'inv_cust_email', 'inv_cust_address', 'inv_due_date', 'inv_terms',
+                'w_biz_name', 'w_name', 'w_biz_address', 'w_biz_phone', 'w_biz_email', 'w_biz_website', 'w_tax_number',
+                'w_profession', 'w_currency', 'w_signature', 'cust_signature', 'payment_method',
+                'bank_account_holder', 'bank_name', 'bank_iban', 'bank_account_number', 'bank_swift',
+                'work_desc', 'amount', 'tax_rate', 'discount_rate', 'shipping', 'invoice_date'
             ];
             inputs.forEach(id => {
                 const el = document.getElementById(id);
@@ -318,64 +384,4 @@
             });
 
             document.getElementById('request-fields').classList.toggle('hidden', tab !== 'request');
-            document.getElementById('quote-fields').classList.toggle('hidden', tab !== 'quote');
-            document.getElementById('worker-fields').classList.toggle('hidden', tab !== 'invoice');
-
-            // Amount/description section: shown for invoice + quote, hidden for request (request has its own budget/description)
-            document.getElementById('amount-section').classList.toggle('hidden', tab === 'request');
-            // Payment status: only for invoice
-            document.getElementById('payment-status-section').classList.toggle('hidden', tab !== 'invoice');
-            document.getElementById('convert-quote-section').classList.toggle('hidden', tab !== 'quote');
-
-            document.getElementById('doc-num-label').innerText = tab === 'quote' ? 'Quote Number' : tab === 'request' ? 'Request Number' : 'Invoice Number';
-            document.getElementById('desc-label').innerText = tab === 'quote' ? 'Description' : 'Work Details / Description';
-            document.getElementById('amount-label').innerText = tab === 'quote' ? 'Estimated Amount' : 'Amount';
-            document.getElementById('main-generate-btn').innerText = tab === 'request' ? 'Send Request' : 'Download & Share';
-
-            document.getElementById('prev-invoice-type').innerText = tab === 'quote' ? 'QUOTE' : tab === 'request' ? 'SERVICE REQUEST' : 'INVOICE';
-
-            generateInvoiceNumber();
-            updatePreview();
-        }
-
-        function handleStatusClick(status) {
-            if (viewingSharedInvoice && currentInvoiceId) {
-                updateSharedStatus(status);
-            } else {
-                setStatus(status);
-            }
-        }
-
-        function setStatus(status) {
-            paymentStatus = status;
-            document.querySelectorAll('.status-btn').forEach(btn => {
-                btn.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-600');
-                if (btn.innerText === status) {
-                    btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
-                }
-            });
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const data = getFormData();
-
-            // Update Preview Text
-            document.getElementById('prev-invoice-num').innerText = data.invoiceNum;
-            document.getElementById('prev-to-date').innerText = data.date ? new Date(data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
-            document.getElementById('prev-desc').innerText = data.desc || 'No description provided...';
-
-            if (currentTab === 'request') {
-                document.getElementById('prev-from-name').innerText = 'QuickQuote User';
-                document.getElementById('prev-from-prof').innerText = 'Service Request';
-                document.getElementById('prev-to-name').innerText = data.cService || 'Any Professional';
-                document.getElementById('prev-invoice-type').innerText = 'SERVICE REQUEST';
-            } else if (currentTab === 'quote') {
-                document.getElementById('prev-from-name').innerText = data.wProf || 'Professional Service';
-                document.getElementById('prev-from-prof').innerText = 'Quote';
-                document.getElementById('prev-to-name').innerText = data.cName || 'Valued Customer';
-                document.getElementById('prev-invoice-type').innerText = 'QUOTE';
-            } else {
-                document.getElementById('prev-from-name').innerText = data.wBizName || 'Your Business Name';
-                document.getElementById('prev-from-prof').innerText = data.wProf || 'Professional Service';
-                document.getElementById('prev-to-name').inn
+   
