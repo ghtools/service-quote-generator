@@ -56,18 +56,49 @@
         .minimal-template #prev-invoice-type { color: #1a1a1a !important; -webkit-text-fill-color: #1a1a1a !important; background: none !important; }
         .minimal-template #prev-total { color: #1a1a1a !important; }
 
-        /* Invoice styling */
+        /* Invoice styling - A4 proportions (210mm x 297mm ratio) */
         #invoice-card {
             width: 100%;
+            aspect-ratio: 210 / 297;
             min-height: 700px;
             background: white;
             color: #1a1a1a;
-            padding: 40px;
+            padding: 48px 44px;
             position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
-        .invoice-label { color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .invoice-label { color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
         .invoice-value { color: #1e293b; font-size: 14px; font-weight: 500; }
+
+        .items-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .items-table th { text-align: left; padding: 8px 6px; border-bottom: 2px solid #1a1a1a; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: #64748b; }
+        .items-table td { padding: 8px 6px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
+        .items-table tr:last-child td { border-bottom: none; }
+
+        .doc-section-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
+
+        /* Print optimization: exact A4 page, no browser headers/footers, colors preserved */
+        @media print {
+            @page { size: A4 portrait; margin: 12mm; }
+            body * { visibility: hidden; }
+            #invoice-preview-container, #invoice-preview-container * { visibility: visible; }
+            #invoice-preview-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                box-shadow: none !important;
+            }
+            #invoice-card {
+                aspect-ratio: unset;
+                min-height: 0;
+                width: 100%;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 6px; }
