@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    <title>Free Quote Generator - Create Price Estimates Online | QuickQuote Pro</title>
+    <meta name="title" content="Free Quote Generator - Create Price Estimates Online | QuickQuote Pro">
+    <meta name="description" content="Create professional price quotes and estimates free, in seconds. Set validity dates, terms and conditions, and convert accepted quotes into invoices with one tap.">
+    <meta name="keywords" content="free quote generator, price quote maker, estimate generator, service quote, contractor quote, freelancer estimate, business quote tool">
+    <link rel="canonical" href="https://service-quote-generator.vercel.app/quote.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://service-quote-generator.vercel.app/quote.html">
+    <meta property="og:title" content="Free Quote Generator - QuickQuote Pro">
+    <meta property="og:description" content="Create professional price quotes and estimates free, in seconds. Convert accepted quotes into invoices with one tap.">
+    <meta property="og:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://service-quote-generator.vercel.app/quote.html">
+    <meta property="twitter:title" content="Free Quote Generator - QuickQuote Pro">
+    <meta property="twitter:description" content="Create professional price quotes and estimates free, in seconds.">
+    <meta property="twitter:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <meta name="theme-color" content="#075e54">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "QuickQuote Pro Quote Generator",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": "https://service-quote-generator.vercel.app/quote.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "198" },
+      "description": "Free online quote generator for freelancers, contractors and small businesses. Create and share professional price estimates in seconds."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://service-quote-generator.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Quote Generator", "item": "https://service-quote-generator.vercel.app/quote.html" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What's the difference between a quote and an invoice?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A quote is a price estimate you send before work begins, so a customer knows what to expect. An invoice is issued after the work is done and requests payment." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I turn a quote into an invoice later?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Once a customer accepts your quote and the work is complete, tap 'Convert Quote into Invoice' to carry over the customer, pricing and description into a new invoice automatically." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I set an expiry date on my quote?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, every quote includes a 'Valid Until' date so customers know how long the pricing is guaranteed." }
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 transition-colors duration-300">
+    <script>const PAGE_TYPE = 'quote';</script>
+
+    <header class="fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2 shrink-0">
+                <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">Q</div>
+                <span class="text-base sm:text-xl font-extrabold tracking-tight dark:text-white whitespace-nowrap">QuickQuote <span class="text-emerald-600">Pro</span></span>
+            </a>
+            <nav class="hidden lg:flex items-center gap-1">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">Home</a>
+                <a href="invoice.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">Invoice</a>
+                <a href="quote.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 transition-all">Quote</a>
+                <a href="request.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">Request</a>
+            </nav>
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-yellow-400"></i>
+                </button>
+                <button id="installApp" class="hidden md:flex items-center gap-2 bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-all">
+                    <i data-lucide="download" class="w-4 h-4"></i> Install App
+                </button>
+                <div id="auth-buttons-guest" class="flex items-center gap-2">
+                    <button onclick="openLoginModal()" class="px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold text-emerald-600 border-2 border-emerald-600 bg-transparent hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">Login</button>
+                    <button onclick="openSignupModal()" class="flex items-center px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold text-white transition-all shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Sign Up</button>
+                </div>
+                <button id="account-btn-loggedin" onclick="openMyInvoices()" class="hidden items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-emerald-700 transition-all">
+                    <i data-lucide="user" class="w-4 h-4"></i> <span id="accountBtnText">Account</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-1 dark:text-white" id="auth-title">Sign In</h3>
+            <p class="text-sm text-slate-500 mb-6" id="auth-subtitle">Access your invoice history from any device.</p>
+            <div class="space-y-3">
+                <input type="email" id="auth-email" placeholder="Email" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="password" id="auth-password" placeholder="Password" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                <p id="auth-error" class="text-red-500 text-xs hidden"></p>
+                <button id="auth-submit-btn" onclick="submitAuth()" class="w-full py-3 text-white rounded-xl font-bold transition-all shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Sign In</button>
+                <p class="text-center text-sm text-slate-500">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-emerald-600 font-bold hover:underline">Sign Up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="invoices-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-lg relative max-h-[80vh] flex flex-col shadow-2xl">
+            <button onclick="closeModal('invoices-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-4 dark:text-white">My Invoices</h3>
+            <div id="invoices-list" class="space-y-2 overflow-y-auto flex-1">
+                <p class="text-sm text-slate-400">Loading...</p>
+            </div>
+            <button onclick="logout()" class="mt-4 w-full py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50">Log Out</button>
+        </div>
+    </div>
+
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl">
+            <button onclick="closeModal('share-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i></div>
+                <h3 class="text-lg font-black dark:text-white">Saved!</h3>
+                <p class="text-sm text-slate-500">Anyone with this link will see this exact document.</p>
+            </div>
+            <div class="flex gap-2">
+                <input id="share-link-input" readonly class="flex-1 px-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono">
+                <button onclick="copyShareLink()" class="px-4 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="pt-32 pb-12 px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto text-center">
+            <nav class="text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+                <a href="index.html" class="hover:text-emerald-600">Home</a> / <span class="text-slate-600 dark:text-slate-300">Quote Generator</span>
+            </nav>
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 dark:text-white leading-tight">
+                Free Quote Generator <br class="hidden sm:block"><span class="gradient-text">for Price Estimates</span>
+            </h1>
+            <p class="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Send a clean, professional price estimate before you start work — with terms, an expiry date and a one-tap conversion to a real invoice once the job is done.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ Free Forever</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ Validity Date</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ Convert to Invoice</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ QR Code</span>
+            </div>
+        </div>
+    </section>
+
+    <main id="app-interface" class="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="space-y-8">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div id="form-content" class="space-y-6">
+                    <div id="common-fields" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300" id="doc-num-label">Quote Number</label>
+                            <input type="text" id="invoice_num" readonly class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Date</label>
+                            <input type="date" id="invoice_date" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Accent Color</label>
+                        <div class="flex gap-3">
+                            <button type="button" data-accent="green" onclick="setAccentColor('green')" class="accent-swatch w-8 h-8 rounded-full ring-2 ring-offset-2 ring-slate-400" style="background:#059669"></button>
+                            <button type="button" data-accent="blue" onclick="setAccentColor('blue')" class="accent-swatch w-8 h-8 rounded-full" style="background:#2563eb"></button>
+                            <button type="button" data-accent="orange" onclick="setAccentColor('orange')" class="accent-swatch w-8 h-8 rounded-full" style="background:#ea580c"></button>
+                            <button type="button" data-accent="black" onclick="setAccentColor('black')" class="accent-swatch w-8 h-8 rounded-full" style="background:#1e293b"></button>
+                            <button type="button" data-accent="red" onclick="setAccentColor('red')" class="accent-swatch w-8 h-8 rounded-full" style="background:#dc2626"></button>
+                        </div>
+                    </div>
+
+                    <div id="quote-fields" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Name *</label>
+                            <input type="text" id="q_cust_name" placeholder="Enter customer name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Profession</label>
+                                <select id="q_profession" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Currency</label>
+                                <select id="q_currency" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></select>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Valid Until</label>
+                            <input type="date" id="q_valid_until" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Terms & Conditions</label>
+                            <textarea id="q_terms" rows="2" placeholder="e.g. 50% advance required" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Signature (optional, type your name)</label>
+                            <input type="text" id="q_signature" placeholder="e.g. John Smith" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" style="font-family: 'Brush Script MT', cursive;">
+                        </div>
+                    </div>
+
+                    <div id="amount-section" class="space-y-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300" id="desc-label">Items</label>
+                                <button type="button" onclick="addItemRow()" class="text-emerald-600 text-sm font-bold hover:underline">+ Add Item</button>
+                            </div>
+                            <div class="grid grid-cols-12 gap-2 px-1 text-[10px] font-bold uppercase text-slate-400">
+                                <span class="col-span-5">Description</span><span class="col-span-2 text-center">Qty</span><span class="col-span-2 text-right">Price</span><span class="col-span-2 text-right">Amount</span><span class="col-span-1"></span>
+                            </div>
+                            <div id="items-form-container" class="space-y-2"></div>
+                            <input type="hidden" id="work_desc" value="">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Tax (%)</label>
+                                <input type="number" id="tax_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Discount (%)</label>
+                                <input type="number" id="discount_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <input type="hidden" id="amount" value="0">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Notes (optional)</label>
+                            <textarea id="notes" rows="2" placeholder="Any additional notes" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></textarea>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="show_qr_toggle" checked onchange="toggleQR()" class="w-4 h-4 accent-emerald-600">
+                            <label for="show_qr_toggle" class="text-sm font-bold text-slate-700 dark:text-slate-300">Show QR code on document</label>
+                        </div>
+                    </div>
+
+                    <div id="convert-quote-section">
+                        <button onclick="convertQuoteToInvoice()" class="w-full px-6 py-3 border-2 border-emerald-600 text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">Convert Quote into Invoice</button>
+                    </div>
+
+                    <div class="flex gap-4 pt-6">
+                        <button onclick="resetForm()" class="flex-1 px-6 py-4 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Clear Form</button>
+                        <button onclick="generateAndScroll()" id="main-generate-btn" class="flex-[2] px-6 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/20 hover:bg-emerald-700 transition-all">Download & Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-8">
+            <div class="sticky top-24">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold dark:text-white">Live Preview</h2>
+                    <div class="flex gap-2">
+                        <button onclick="switchTemplate('modern')" class="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold">Modern</button>
+                        <button onclick="switchTemplate('minimal')" class="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">Minimal</button>
+                    </div>
+                </div>
+                <div id="invoice-preview-container" class="invoice-preview-container rounded-2xl overflow-hidden animate-fade">
+                    <div id="invoice-card" class="bg-white">
+                        <div class="flex justify-between items-start mb-6">
+                            <div id="biz-logo-preview" class="hidden flex w-16 h-16 rounded-xl items-center justify-center overflow-hidden"></div>
+                            <div>
+                                <h3 id="prev-invoice-type" class="text-4xl font-black text-slate-900 tracking-tight">QUOTE</h3>
+                                <div class="w-16 h-1 mt-1 rounded-full" style="background: var(--doc-accent);"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-start mb-8 gap-6">
+                            <div>
+                                <p class="doc-section-title"><i data-lucide="building-2"></i>From</p>
+                                <p id="prev-from-name" class="font-bold text-slate-900">Professional Service</p>
+                                <p id="prev-from-prof" class="text-slate-500 text-xs">Quote</p>
+                            </div>
+                            <div class="text-left sm:text-right shrink-0">
+                                <div class="text-xs space-y-1.5">
+                                    <p class="flex justify-between gap-4"><span class="text-slate-400">Quote No.</span> <span id="prev-invoice-num" class="font-bold text-slate-900 font-mono">QUO-000000</span></p>
+                                    <p class="flex justify-between gap-4"><span class="text-slate-400">Date</span> <span id="prev-to-date" class="font-bold text-slate-900">—</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+                            <div class="doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="user"></i>Prepared For</p>
+                                <p id="prev-to-name" class="font-bold text-slate-900">Customer Name</p>
+                            </div>
+                            <div id="qr-box" class="doc-section-card flex flex-col items-center justify-center text-center">
+                                <p class="invoice-label mb-2">Scan to View</p>
+                                <div id="qrcode-container" class="opacity-90"></div>
+                            </div>
+                        </div>
+
+                        <div id="prev-items-container" class="mb-8 overflow-x-auto"></div>
+
+                        <div class="flex justify-end mb-8">
+                            <div class="w-full sm:w-64">
+                                <div id="prev-pricing-block" class="space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Subtotal</span>
+                                        <span id="prev-subtotal" class="font-bold">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Tax (<span id="prev-tax-rate">0</span>%)</span>
+                                        <span id="prev-tax-val" class="font-bold">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Discount (<span id="prev-disc-rate">0</span>%)</span>
+                                        <span id="prev-disc-val" class="font-bold">-$0.00</span>
+                                    </div>
+                                    <div id="prev-shipping-row" class="hidden flex justify-between text-sm">
+                                        <span class="text-slate-500">Shipping</span>
+                                        <span id="prev-shipping-val" class="font-bold">$0.00</span>
+                                    </div>
+                                    <div class="doc-grand-total-bar mt-3">
+                                        <span id="prev-total-label" class="text-sm font-black uppercase">Estimated Total</span>
+                                        <span id="prev-total" class="text-xl font-black">$0.00</span>
+                                    </div>
+                                </div>
+                                <div id="prev-budget-block" class="hidden doc-grand-total-bar">
+                                    <span class="text-sm font-black uppercase">Budget</span>
+                                    <span id="prev-budget" class="text-xl font-black">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+                            <div id="prev-notes-block" class="hidden doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="message-square"></i>Notes</p>
+                                <p id="prev-notes" class="text-slate-600 text-xs leading-relaxed"></p>
+                            </div>
+                            <div id="prev-terms-block" class="hidden doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="file-text"></i>Terms & Conditions</p>
+                                <p id="prev-terms" class="text-slate-600 text-xs leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <div id="signature-block" class="hidden border-t border-slate-200 pt-3 mb-6 text-right">
+                            <p id="prev-signature" class="doc-signature-name" style="font-family: 'Brush Script MT', cursive;"></p>
+                            <p class="invoice-label mt-1">Authorized Signature</p>
+                        </div>
+
+                        <div class="text-center border-t border-slate-100 pt-4">
+                            <p id="prev-pay-method" class="text-xs text-slate-500 font-semibold"></p>
+                        </div>
+                    </div>
+                    <div class="doc-footer-bar">Powered by <strong>QuickQuote Pro</strong></div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-8">
+                    <button onclick="exportImage()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="image" class="w-4 h-4"></i> Save JPG</button>
+                    <button onclick="exportPNG()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="image" class="w-4 h-4"></i> Save PNG</button>
+                    <button onclick="exportPDF()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="file-text" class="w-4 h-4"></i> Save PDF</button>
+                    <button onclick="window.print()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold hover:bg-slate-50 transition-all"><i data-lucide="printer" class="w-4 h-4"></i> Print</button>
+                    <button onclick="shareWA()" class="flex items-center justify-center gap-2 p-3 bg-[#25D366] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</button>
+                    <button onclick="shareTG()" class="flex items-center justify-center gap-2 p-3 bg-[#0088cc] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="send" class="w-4 h-4"></i> Telegram</button>
+                    <button onclick="shareFB()" class="flex items-center justify-center gap-2 p-3 bg-[#1877F2] text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="facebook" class="w-4 h-4"></i> Facebook</button>
+                    <button onclick="saveAndShare()" class="col-span-2 md:col-span-3 flex items-center justify-center gap-2 p-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold hover:opacity-90 transition-all"><i data-lucide="link" class="w-4 h-4"></i> Save & Get Shareable Link</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="bg-white dark:bg-slate-900 py-20 px-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto space-y-14">
+            <article class="prose dark:prose-invert max-w-none">
+                <h2 class="text-3xl font-extrabold mb-4 dark:text-white">Send Price Estimates Customers Trust</h2>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">A quote sets expectations before you pick up a tool or open your laptop. It protects both sides: your customer knows roughly what they'll pay, and you have something in writing if the scope changes later. QuickQuote Pro's quote generator lets you build a clean, professional estimate in the same amount of time it takes to send a text message.</p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Every quote includes a <strong>Valid Until</strong> date, so customers understand your pricing won't hold forever, and a <strong>Terms & Conditions</strong> field for anything you need to spell out — deposits, material costs, or cancellation policy. Once the customer accepts and the job is finished, tap <strong>"Convert Quote into Invoice"</strong> and the customer name, pricing and description carry straight over — no retyping.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Why Send a Quote Before Starting Work</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Jobs that start without an agreed price are the most common source of payment disputes. A customer who never saw a number in writing feels entitled to negotiate after the work is done, when you have the least leverage. A quote flips that: the price is agreed before you show up, so the conversation at the end is about payment, not negotiation. It also filters out customers who were never going to accept your rate, saving you a wasted trip.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">What Makes a Strong Quote</h3>
+                <ul class="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                    <li><strong>A specific description</strong> — "fix the sink" invites scope creep; "replace kitchen sink trap and re-seal connection" doesn't.</li>
+                    <li><strong>A validity date</strong> — material costs change; a quote from three months ago shouldn't be binding today.</li>
+                    <li><strong>Clear terms</strong> — deposit requirements, what happens if the scope changes, and who supplies materials.</li>
+                    <li><strong>A professional look</strong> — the same visual quality as your invoices builds trust before the job even starts.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">How to Send a Quote</h3>
+                <ol class="list-decimal list-inside space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                    <li>Enter the customer's name and select your profession and currency.</li>
+                    <li>Describe the work and enter your estimated amount, tax and discount.</li>
+                    <li>Set how long the quote is valid and add any terms.</li>
+                    <li>Download it or tap "Save & Get Shareable Link" to send it over WhatsApp.</li>
+                </ol>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">From Quote to Invoice, Automatically</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">The biggest friction in most quoting workflows is re-entering the same information twice — once for the quote, again for the invoice once the job is approved. QuickQuote Pro removes that step entirely. Tap "Convert Quote into Invoice" on any quote you've created, and it opens the <a href="invoice.html" class="text-emerald-600 hover:underline">Invoice Generator</a> with the customer name, profession, currency, description, amount, tax and discount already filled in. You just confirm the details, set the payment method and status, and send.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Quotes for Every Trade and Business</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">Contractors quoting a renovation, freelancers estimating a design project, movers pricing a house shift, or consultants scoping a retainer — the same tool adapts to any of the 55+ supported professions, in over 35 currencies.</p>
+            </article>
+
+            <div>
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">What's the difference between a quote and an invoice?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">A quote is a price estimate you send before work begins, so a customer knows what to expect. An invoice is issued after the work is done and requests payment.</p>
+                    </details>
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Can I turn a quote into an invoice later?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Yes. Once a customer accepts your quote and the work is complete, tap "Convert Quote into Invoice" to carry over the customer, pricing and description into a new invoice automatically.</p>
+                    </details>
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Can I set an expiry date on my quote?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Yes, every quote includes a "Valid Until" date so customers know how long the pricing is guaranteed.</p>
+                    </details>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <a href="invoice.html" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-emerald-50">Try the Invoice Generator →</a>
+                <a href="request.html" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-emerald-50">Try the Service Request Tool →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-950 text-slate-400 py-10 px-4 text-center text-sm">
+        <p>&copy; 2026 QuickQuote Pro. Free invoice, quote and service request generator.</p>
+        <div class="flex justify-center gap-4 mt-3 flex-wrap">
+            <a href="index.html" class="hover:text-white">Home</a>
+            <a href="invoice.html" class="hover:text-white">Invoice</a>
+            <a href="quote.html" class="hover:text-white">Quote</a>
+            <a href="request.html" class="hover:text-white">Request</a>
+            <a href="about.html" class="hover:text-white">About</a>
+            <a href="contact.html" class="hover:text-white">Contact</a>
+            <a href="faq.html" class="hover:text-white">FAQ</a>
+            <a href="privacy-policy.html" class="hover:text-white">Privacy</a>
+            <a href="terms.html" class="hover:text-white">Terms</a>
+        </div>
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
