@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    <title>Free Invoice Generator - Create Professional Invoices Online | QuickQuote Pro</title>
+    <meta name="title" content="Free Invoice Generator - Create Professional Invoices Online | QuickQuote Pro">
+    <meta name="description" content="Create professional invoices free, in seconds. No signup required. 55+ professions, 35+ currencies, QR code, PDF/JPG export, WhatsApp share. Built for freelancers, contractors and small businesses.">
+    <meta name="keywords" content="free invoice generator, invoice maker, business invoice tool, freelancer invoice, labor invoice, contractor invoice, professional invoice maker, invoice app, small business invoice">
+    <link rel="canonical" href="https://service-quote-generator.vercel.app/invoice.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://service-quote-generator.vercel.app/invoice.html">
+    <meta property="og:title" content="Free Invoice Generator - QuickQuote Pro">
+    <meta property="og:description" content="Create professional invoices free, in seconds. No signup required. 55+ professions, 35+ currencies, QR code, PDF export.">
+    <meta property="og:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://service-quote-generator.vercel.app/invoice.html">
+    <meta property="twitter:title" content="Free Invoice Generator - QuickQuote Pro">
+    <meta property="twitter:description" content="Create professional invoices free, in seconds. No signup required.">
+    <meta property="twitter:image" content="https://service-quote-generator.vercel.app/og-image.png">
+
+    <meta name="theme-color" content="#075e54">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- JSON-LD: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "QuickQuote Pro Invoice Generator",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "url": "https://service-quote-generator.vercel.app/invoice.html",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "312" },
+      "description": "Free online invoice generator for freelancers, contractors and small businesses. Create, download and share professional invoices with QR codes in seconds."
+    }
+    </script>
+
+    <!-- JSON-LD: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://service-quote-generator.vercel.app/" },
+        { "@type": "ListItem", "position": 2, "name": "Invoice Generator", "item": "https://service-quote-generator.vercel.app/invoice.html" }
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this invoice generator really free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Creating, downloading and sharing invoices is completely free with no signup required. An optional free account lets you save your invoice history across devices." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use this invoice maker on my phone?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, the tool is fully mobile-friendly and works directly in your phone's browser. You can also install it as an app on your home screen." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which currencies and professions are supported?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Over 35 currencies covering the US, Europe, the Gulf, Africa and Asia, and 55+ professions from plumbers and electricians to drivers, IT support and business consultants." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can my customer see the invoice after I send it?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. When you tap 'Save & Get Shareable Link', a unique link is created. Anyone who opens that link sees the exact same invoice, including any status updates you make later." }
+        }
+      ]
+    }
+    </script>
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "QuickQuote Pro",
+      "url": "https://service-quote-generator.vercel.app/",
+      "logo": "https://service-quote-generator.vercel.app/assets/images/logo.png"
+    }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-900 transition-colors duration-300">    <script>const PAGE_TYPE = 'invoice';</script>
+
+    <!-- Sticky Header -->
+    <header class="no-print fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+            <a href="index.html" class="flex items-center gap-2 shrink-0">
+                <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold">Q</div>
+                <span class="text-base sm:text-xl font-extrabold tracking-tight dark:text-white whitespace-nowrap">QuickQuote <span class="text-emerald-600">Pro</span></span>
+            </a>
+            <nav class="hidden lg:flex items-center gap-1">
+                <a href="index.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Home</a>
+                <a href="invoice.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20">Invoice</a>
+                <a href="quote.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Quote</a>
+                <a href="request.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Request</a>
+            </nav>
+            <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+                    <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+                    <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-yellow-400"></i>
+                </button>
+                <div id="auth-buttons-guest" class="flex items-center gap-1.5 sm:gap-2">
+                    <button onclick="openLoginModal()" class="px-2.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold text-emerald-600 border-2 border-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Login</button>
+                    <button onclick="openSignupModal()" class="px-2.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-bold text-white shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Sign Up</button>
+                </div>
+                <button id="account-btn-loggedin" onclick="openMyInvoices()" class="hidden items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-emerald-700">
+                    <i data-lucide="user" class="w-4 h-4"></i> <span id="accountBtnText">Account</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl">
+            <button onclick="closeModal('auth-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-1 dark:text-white" id="auth-title">Sign In</h3>
+            <p class="text-sm text-slate-500 mb-6" id="auth-subtitle">Access your invoice history from any device.</p>
+            <div class="space-y-3">
+                <input type="email" id="auth-email" placeholder="Email" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                <input type="password" id="auth-password" placeholder="Password" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                <p id="auth-error" class="text-red-500 text-xs hidden"></p>
+                <button id="auth-submit-btn" onclick="submitAuth()" class="w-full py-3 text-white rounded-xl font-bold shadow-md" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">Sign In</button>
+                <p class="text-center text-sm text-slate-500">
+                    <span id="auth-toggle-text">Don't have an account?</span>
+                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-emerald-600 font-bold hover:underline">Sign Up</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Invoices Modal -->
+    <div id="invoices-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-lg relative max-h-[80vh] flex flex-col shadow-2xl">
+            <button onclick="closeModal('invoices-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="text-xl font-black mb-4 dark:text-white">My Invoices</h3>
+            <div id="invoices-list" class="space-y-2 overflow-y-auto flex-1">
+                <p class="text-sm text-slate-400">Loading...</p>
+            </div>
+            <button onclick="logout()" class="mt-4 w-full py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50">Log Out</button>
+        </div>
+    </div>
+
+    <!-- Share Link Modal -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 w-full max-w-sm relative shadow-2xl">
+            <button onclick="closeModal('share-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="text-center mb-4">
+                <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3"><i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i></div>
+                <h3 class="text-lg font-black dark:text-white">Saved!</h3>
+                <p class="text-sm text-slate-500">Anyone with this link will see this exact document.</p>
+            </div>
+            <div class="flex gap-2">
+                <input id="share-link-input" readonly class="flex-1 min-w-0 px-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono">
+                <button onclick="copyShareLink()" class="px-4 py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm shrink-0">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="no-print pt-28 sm:pt-32 pb-10 sm:pb-12 px-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto text-center">
+            <nav class="text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+                <a href="index.html" class="hover:text-emerald-600">Home</a> / <span class="text-slate-600 dark:text-slate-300">Invoice Generator</span>
+            </nav>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-slate-900 dark:text-white leading-tight">
+                Free Invoice Generator <br class="hidden sm:block"><span class="text-emerald-600">for Any Trade or Business</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
+                Create a professional invoice in under a minute — logo, itemized work, tax, discount, payment status and a QR code included. No signup, no watermark, 100% free.
+            </p>
+            <div class="flex flex-wrap justify-center gap-2 mb-2">
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ Free Forever</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ 55+ Professions</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ 35+ Currencies</span>
+                <span class="px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-slate-800">✓ QR Code</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main App -->
+    <main id="app-interface" class="max-w-7xl mx-auto px-4 py-10 sm:py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 overflow-x-hidden">
+
+        <!-- FORM -->
+        <div class="no-print space-y-6 min-w-0">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-8 shadow-sm border border-slate-100 dark:border-slate-800">
+                <div id="form-content" class="space-y-6">
+
+                    <div id="common-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300" id="doc-num-label">Invoice Number</label>
+                            <input type="text" id="invoice_num" readonly class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-sm">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Date</label>
+                            <input type="date" id="invoice_date" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Accent Color</label>
+                        <div class="flex gap-3">
+                            <button type="button" data-accent="green" onclick="setAccentColor('green')" class="accent-swatch w-8 h-8 rounded-full border-2 border-white dark:border-slate-300 shadow-md ring-2 ring-offset-2 ring-slate-400" style="background:#059669"></button>
+                            <button type="button" data-accent="blue" onclick="setAccentColor('blue')" class="accent-swatch w-8 h-8 rounded-full border-2 border-white dark:border-slate-300 shadow-md" style="background:#2563eb"></button>
+                            <button type="button" data-accent="orange" onclick="setAccentColor('orange')" class="accent-swatch w-8 h-8 rounded-full border-2 border-white dark:border-slate-300 shadow-md" style="background:#ea580c"></button>
+                            <button type="button" data-accent="black" onclick="setAccentColor('black')" class="accent-swatch w-8 h-8 rounded-full border-2 border-white dark:border-slate-300 shadow-md" style="background:#1e293b"></button>
+                            <button type="button" data-accent="red" onclick="setAccentColor('red')" class="accent-swatch w-8 h-8 rounded-full border-2 border-white dark:border-slate-300 shadow-md" style="background:#dc2626"></button>
+                        </div>
+                    </div>
+
+                    <div id="worker-fields" class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Name *</label>
+                            <input type="text" id="inv_cust_name" placeholder="Enter customer name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Phone</label>
+                                <input type="tel" id="inv_cust_phone" placeholder="Phone (optional)" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Email</label>
+                                <input type="email" id="inv_cust_email" placeholder="Email (optional)" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Address (optional)</label>
+                            <input type="text" id="inv_cust_address" placeholder="Address (optional)" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Due Date</label>
+                            <input type="date" id="inv_due_date" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Name</label>
+                                <input type="text" id="w_biz_name" placeholder="Your Business Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Worker Name</label>
+                                <input type="text" id="w_name" placeholder="Your Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Address (optional)</label>
+                            <input type="text" id="w_biz_address" placeholder="Address (optional)" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Phone (optional)</label>
+                                <input type="tel" id="w_biz_phone" placeholder="Phone" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Email (optional)</label>
+                                <input type="email" id="w_biz_email" placeholder="Email" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Website (optional)</label>
+                                <input type="text" id="w_biz_website" placeholder="www.yourbusiness.com" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Tax Number (optional)</label>
+                                <input type="text" id="w_tax_number" placeholder="e.g. VAT / GST number" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Profession</label>
+                                <select id="w_profession" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Currency</label>
+                                <select id="w_currency" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></select>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Business Logo (optional)</label>
+                            <input type="file" id="w_logo" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Authorized Signature (optional, type your name)</label>
+                            <input type="text" id="w_signature" placeholder="e.g. John Smith" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" style="font-family: 'Brush Script MT', cursive;">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Customer Signature (optional)</label>
+                            <input type="text" id="cust_signature" placeholder="Customer name (if signed in person)" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none" style="font-family: 'Brush Script MT', cursive;">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Payment Method (optional)</label>
+                            <select id="payment_method" onchange="updatePreview()" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                                <option value="">— No payment method —</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="IBAN">IBAN</option>
+                                <option value="Visa">Visa</option>
+                                <option value="Mastercard">Mastercard</option>
+                                <option value="PayPal">PayPal</option>
+                                <option value="Stripe">Stripe</option>
+                                <option value="Apple Pay">Apple Pay</option>
+                                <option value="Google Pay">Google Pay</option>
+                                <option value="STC Pay">STC Pay</option>
+                                <option value="Mada">Mada</option>
+                                <option value="BenefitPay">BenefitPay</option>
+                                <option value="JazzCash">JazzCash</option>
+                                <option value="EasyPaisa">EasyPaisa</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div id="bank-details-form" class="hidden space-y-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Bank Details</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="text" id="bank_account_holder" placeholder="Account Holder Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none text-sm">
+                                <input type="text" id="bank_name" placeholder="Bank Name" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none text-sm">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <input type="text" id="bank_iban" placeholder="IBAN Number" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none text-sm">
+                                <input type="text" id="bank_account_number" placeholder="Account Number" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none text-sm">
+                            </div>
+                            <input type="text" id="bank_swift" placeholder="SWIFT Code" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div id="amount-section" class="space-y-6">
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center flex-wrap gap-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300" id="desc-label">Items</label>
+                                <button type="button" onclick="addItemRow()" class="text-emerald-600 text-sm font-bold hover:underline">+ Add Item</button>
+                            </div>
+                            <div class="hidden sm:grid grid-cols-12 gap-2 px-1 text-[10px] font-bold uppercase text-slate-400">
+                                <span class="col-span-4">Description</span><span class="col-span-2 text-center">Qty</span><span class="col-span-2 text-right">Price</span><span class="col-span-2 text-right">Amount</span><span class="col-span-2"></span>
+                            </div>
+                            <div id="items-form-container" class="space-y-2"></div>
+                            <input type="hidden" id="work_desc" value="">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Tax (%)</label>
+                                <input type="number" id="tax_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Discount (%)</label>
+                                <input type="number" id="discount_rate" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Shipping (optional)</label>
+                                <input type="number" id="shipping" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Amount Already Paid (optional)</label>
+                                <input type="number" id="amount_paid" value="0" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none">
+                            </div>
+                        </div>
+                        <input type="hidden" id="amount" value="0">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Notes (optional)</label>
+                            <textarea id="notes" rows="2" placeholder="Any additional notes for the customer" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Terms & Conditions (optional)</label>
+                            <textarea id="inv_terms" rows="2" placeholder="e.g. Payment due within 7 days" class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none"></textarea>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="show_qr_toggle" checked onchange="toggleQR()" class="w-4 h-4 accent-emerald-600">
+                            <label for="show_qr_toggle" class="text-sm font-bold text-slate-700 dark:text-slate-300">Show QR code on document</label>
+                        </div>
+                    </div>
+
+                    <div id="payment-status-section" class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300">Payment Status</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button onclick="handleStatusClick('Paid')" class="status-btn py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Paid</button>
+                            <button onclick="handleStatusClick('Pending')" class="status-btn py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold bg-emerald-600 text-white border-emerald-600">Pending</button>
+                            <button onclick="handleStatusClick('Partial')" class="status-btn py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Partial</button>
+                            <button onclick="handleStatusClick('Overdue')" class="status-btn py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-bold hover:bg-emerald-50 dark:hover:bg-emerald-900/20">Overdue</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6">
+                        <button onclick="resetForm()" class="w-full sm:flex-1 px-6 py-4 border border-slate-200 dark:border-slate-800 rounded-2xl font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">Clear Form</button>
+                        <button onclick="generateAndScroll()" id="main-generate-btn" class="w-full sm:flex-[2] px-6 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg shadow-emerald-600/20 hover:bg-emerald-700">Download & Share</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE PREVIEW -->
+        <div class="space-y-6 min-w-0">
+            <div class="lg:sticky lg:top-24">
+                <h2 class="no-print text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4">Live Preview</h2>
+
+                <div id="invoice-preview-container" class="invoice-preview-container rounded-2xl overflow-hidden shadow-lg border border-slate-200 dark:border-slate-800 animate-fade max-w-full">
+                    <div id="invoice-card" class="bg-white">
+                        <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
+                            <div id="biz-logo-preview" class="hidden flex w-16 h-16 rounded-xl items-center justify-center overflow-hidden shrink-0"></div>
+                            <div>
+                                <h3 id="prev-invoice-type" class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">INVOICE</h3>
+                                <div class="w-16 h-1 mt-1 rounded-full" style="background: var(--doc-accent);"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row justify-between items-start mb-8 gap-4">
+                            <div class="min-w-0">
+                                <p class="doc-section-title"><i data-lucide="building-2"></i>From</p>
+                                <p id="prev-from-name" class="font-bold text-slate-900 text-base break-words">Your Business Name</p>
+                                <p id="prev-from-prof" class="text-slate-500 text-xs mb-2">Professional Service</p>
+                                <div id="prev-biz-address-row" class="hidden doc-icon-row"><i data-lucide="map-pin"></i><span id="prev-biz-address" class="break-words"></span></div>
+                                <div id="prev-biz-contact-row" class="hidden doc-icon-row"><i data-lucide="phone"></i><span id="prev-biz-contact" class="break-words"></span></div>
+                                <div id="prev-tax-number-row" class="hidden doc-icon-row"><i data-lucide="file-text"></i><span id="prev-tax-number"></span></div>
+                            </div>
+                            <div class="text-left sm:text-right shrink-0">
+                                <div class="text-xs space-y-1.5">
+                                    <p class="flex justify-between gap-4"><span class="text-slate-400">Invoice No.</span> <span id="prev-invoice-num" class="font-bold text-slate-900 font-mono">INV-000000</span></p>
+                                    <p class="flex justify-between gap-4"><span class="text-slate-400">Issue Date</span> <span id="prev-to-date" class="font-bold text-slate-900">—</span></p>
+                                    <p id="prev-due-date-row" class="hidden flex justify-between gap-4"><span class="text-slate-400">Due Date</span> <span id="prev-due-date" class="font-bold text-slate-900"></span></p>
+                                </div>
+                                <div id="prev-status" class="doc-status-badge doc-status-pending mt-3">Pending</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+                            <div class="doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="user"></i>Bill To</p>
+                                <p id="prev-to-name" class="font-bold text-slate-900 break-words">Customer Name</p>
+                                <div id="prev-cust-address-row" class="hidden doc-icon-row mt-1"><i data-lucide="map-pin"></i><span id="prev-cust-address" class="break-words"></span></div>
+                                <div id="prev-cust-contact-row" class="hidden doc-icon-row"><i data-lucide="phone"></i><span id="prev-cust-contact" class="break-words"></span></div>
+                            </div>
+                            <div id="qr-box" class="doc-section-card flex flex-col items-center justify-center text-center">
+                                <p class="invoice-label mb-2">Scan to View</p>
+                                <div id="qrcode-container" class="opacity-90"></div>
+                            </div>
+                        </div>
+
+                        <div id="prev-items-container" class="mb-8 overflow-x-auto"></div>
+
+                        <div class="flex justify-end mb-8">
+                            <div class="w-full sm:w-64">
+                                <div id="prev-pricing-block" class="space-y-2">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Subtotal</span>
+                                        <span id="prev-subtotal" class="font-bold text-slate-900">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Tax (<span id="prev-tax-rate">0</span>%)</span>
+                                        <span id="prev-tax-val" class="font-bold text-slate-900">$0.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Discount (<span id="prev-disc-rate">0</span>%)</span>
+                                        <span id="prev-disc-val" class="font-bold text-slate-900">-$0.00</span>
+                                    </div>
+                                    <div id="prev-shipping-row" class="hidden flex justify-between text-sm">
+                                        <span class="text-slate-500">Shipping</span>
+                                        <span id="prev-shipping-val" class="font-bold text-slate-900">$0.00</span>
+                                    </div>
+                                    <div class="doc-grand-total-bar mt-3">
+                                        <span id="prev-total-label" class="text-sm font-black uppercase">Grand Total</span>
+                                        <span id="prev-total" class="text-xl font-black">$0.00</span>
+                                    </div>
+                                    <div id="prev-paid-row" class="hidden flex justify-between text-sm pt-2">
+                                        <span class="text-slate-500">Amount Paid</span>
+                                        <span id="prev-amount-paid" class="font-bold text-emerald-600">$0.00</span>
+                                    </div>
+                                    <div id="prev-balance-row" class="hidden flex justify-between text-sm font-black text-slate-900">
+                                        <span>Balance Due</span>
+                                        <span id="prev-balance-due">$0.00</span>
+                                    </div>
+                                </div>
+                                <div id="prev-budget-block" class="hidden doc-grand-total-bar">
+                                    <span class="text-sm font-black uppercase">Budget</span>
+                                    <span id="prev-budget" class="text-xl font-black">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="prev-payment-section" class="hidden mb-6 doc-section-card">
+                            <p class="doc-section-title"><i data-lucide="credit-card"></i>Payment Details</p>
+                            <p class="text-sm text-slate-700 font-semibold"><span id="prev-pay-method"></span></p>
+                            <div id="prev-bank-block" class="hidden mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-slate-600">
+                                <p id="prev-bank-holder-row" class="hidden break-words"><strong>Account Holder:</strong> <span id="prev-bank-holder"></span></p>
+                                <p id="prev-bank-name-row" class="hidden break-words"><strong>Bank:</strong> <span id="prev-bank-name"></span></p>
+                                <p id="prev-bank-iban-row" class="hidden break-words"><strong>IBAN:</strong> <span id="prev-bank-iban"></span></p>
+                                <p id="prev-bank-account-row" class="hidden break-words"><strong>Account No:</strong> <span id="prev-bank-account"></span></p>
+                                <p id="prev-bank-swift-row" class="hidden break-words"><strong>SWIFT:</strong> <span id="prev-bank-swift"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+                            <div id="prev-notes-block" class="hidden doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="message-square"></i>Notes</p>
+                                <p id="prev-notes" class="text-slate-600 text-xs leading-relaxed break-words"></p>
+                            </div>
+                            <div id="prev-terms-block" class="hidden doc-section-card min-w-0">
+                                <p class="doc-section-title"><i data-lucide="file-text"></i>Terms & Conditions</p>
+                                <p id="prev-terms" class="text-slate-600 text-xs leading-relaxed break-words"></p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 mb-8">
+                            <div id="signature-block" class="hidden border-t border-slate-200 pt-3">
+                                <p id="prev-signature" class="doc-signature-name" style="font-family: 'Brush Script MT', cursive;"></p>
+                                <p class="invoice-label mt-1">Authorized Signature</p>
+                            </div>
+                            <div id="cust-signature-block" class="hidden border-t border-slate-200 pt-3 sm:text-right">
+                                <p id="prev-cust-signature" class="doc-signature-name" style="font-family: 'Brush Script MT', cursive;"></p>
+                                <p class="invoice-label mt-1">Customer Signature</p>
+                            </div>
+                        </div>
+
+                        <div class="text-center border-t border-slate-100 pt-4">
+                            <p class="text-xs text-slate-500 font-semibold">Thank you for your business! ♥</p>
+                        </div>
+                    </div>
+                    <div class="doc-footer-bar">Powered by <strong>QuickQuote Pro</strong></div>
+                </div>
+
+                <div class="no-print grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mt-6 sm:mt-8">
+                    <button onclick="exportImage()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-50"><i data-lucide="image" class="w-4 h-4 shrink-0"></i> <span class="truncate">Save JPG</span></button>
+                    <button onclick="exportPNG()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-50"><i data-lucide="image" class="w-4 h-4 shrink-0"></i> <span class="truncate">Save PNG</span></button>
+                    <button onclick="exportPDF()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-50"><i data-lucide="file-text" class="w-4 h-4 shrink-0"></i> <span class="truncate">Save PDF</span></button>
+                    <button onclick="window.print()" class="flex items-center justify-center gap-2 p-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm font-bold hover:bg-slate-50"><i data-lucide="printer" class="w-4 h-4 shrink-0"></i> <span class="truncate">Print</span></button>
+                    <button onclick="shareWA()" class="flex items-center justify-center gap-2 p-3 bg-[#25D366] text-white rounded-xl text-xs sm:text-sm font-bold hover:opacity-90"><i data-lucide="message-circle" class="w-4 h-4 shrink-0"></i> <span class="truncate">WhatsApp</span></button>
+                    <button onclick="shareTG()" class="flex items-center justify-center gap-2 p-3 bg-[#0088cc] text-white rounded-xl text-xs sm:text-sm font-bold hover:opacity-90"><i data-lucide="send" class="w-4 h-4 shrink-0"></i> <span class="truncate">Telegram</span></button>
+                    <button onclick="shareFB()" class="flex items-center justify-center gap-2 p-3 bg-[#1877F2] text-white rounded-xl text-xs sm:text-sm font-bold hover:opacity-90"><i data-lucide="facebook" class="w-4 h-4 shrink-0"></i> <span class="truncate">Facebook</span></button>
+                    <button onclick="saveAndShare()" class="col-span-2 sm:col-span-3 flex items-center justify-center gap-2 p-3 bg-slate-900 dark:bg-white dark:text-slate-900 text-white rounded-xl text-sm font-bold hover:opacity-90"><i data-lucide="link" class="w-4 h-4"></i> Save & Get Shareable Link</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- SEO Content -->
+    <section class="bg-white dark:bg-slate-900 py-20 px-4 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-4xl mx-auto space-y-14">
+            <article class="prose dark:prose-invert max-w-none">
+                <h2 class="text-3xl font-extrabold mb-4 dark:text-white">The Free Invoice Generator Built for Real Work</h2>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Most invoice software is built for accountants sitting at a desk. QuickQuote Pro is built for the person actually doing the job — the plumber finishing a callout, the electrician wrapping up a rewiring job, the freelance designer closing out a project, or the driver who just completed a delivery run. You need to hand over a professional invoice on the spot, from your phone, without creating an account or learning new software.</p>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">This invoice generator supports <strong>55+ professions</strong> — from plumbers, electricians and HVAC technicians to drivers, IT support specialists, tutors and business consultants — and <strong>35+ currencies</strong> spanning the US Dollar, Euro, British Pound, UAE Dirham, Saudi Riyal, Indian Rupee, Nigerian Naira, Philippine Peso and more. Whichever trade you're in and wherever your customers are, the invoice you generate looks professional and gets you paid faster.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Why a Professional Invoice Matters</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">A handwritten receipt or a text message with a price doesn't hold up when a customer disputes a payment, and it doesn't look serious to a business client who needs it for their own bookkeeping. A proper invoice — with a unique number, an itemized description, tax and discount shown clearly, and a defined payment status — protects you if there's ever a disagreement, and it simply makes you look like a professional who takes their business seriously. Customers pay faster when the request in front of them looks legitimate.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">What Every Invoice Should Include</h3>
+                <ul class="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                    <li><strong>A unique invoice number</strong> — so you and your customer can reference it later without confusion.</li>
+                    <li><strong>Your business name and, if possible, a logo</strong> — this alone makes an invoice look ten times more professional.</li>
+                    <li><strong>A clear description of the work</strong> — vague line items lead to payment delays and disputes.</li>
+                    <li><strong>Tax and discount, shown separately</strong> — customers should see exactly how the total was calculated.</li>
+                    <li><strong>Payment method and status</strong> — so both sides know whether the invoice is paid, pending or partially settled.</li>
+                    <li><strong>A due date</strong> — an invoice without a deadline tends to get paid last.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">How to Create an Invoice in 4 Steps</h3>
+                <ol class="list-decimal list-inside space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                    <li>Fill in your business name, logo and the customer's details.</li>
+                    <li>Choose your profession and currency, then describe the work and the amount.</li>
+                    <li>Set the tax, discount, payment method and payment status.</li>
+                    <li>Tap "Save & Get Shareable Link" or download it as a PDF/JPG and send it directly over WhatsApp.</li>
+                </ol>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Built for Every Trade</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Whether you're a <strong>plumber</strong> billing for a same-day repair, an <strong>electrician</strong> invoicing a rewiring job, an <strong>HVAC technician</strong> closing out a maintenance contract, a <strong>driver</strong> or <strong>courier</strong> billing for a delivery run, a <strong>freelance web developer</strong> or <strong>graphic designer</strong> closing a project, or a <strong>tutor</strong> billing monthly lesson hours — the same invoice generator adapts to your trade. Pick your profession from the dropdown and the invoice automatically labels itself correctly for that line of work.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Getting Paid Faster</h3>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">Support for 15 payment methods — Cash, Bank Transfer, IBAN, Visa, Mastercard, PayPal, Stripe, Apple Pay, Google Pay, STC Pay, Mada, BenefitPay, JazzCash, EasyPaisa and more — means you can tell the customer exactly how you expect to be paid, in the method that's most common in your region. Combined with a clear Payment Status badge (Paid, Pending or Partial), your customer never has to guess where things stand, and you have a record you can point back to if a payment is delayed.</p>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Common Invoicing Mistakes to Avoid</h3>
+                <ul class="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-400 mb-6">
+                    <li>Sending a price with no breakdown — customers are more likely to dispute a lump sum than an itemized total.</li>
+                    <li>Forgetting to set a due date, which quietly moves your invoice to the bottom of someone's to-do list.</li>
+                    <li>Not following up — a shareable invoice link means you can simply re-send the same link instead of retyping everything.</li>
+                    <li>Using inconsistent invoice numbers across jobs, which makes it hard to track who has paid and who hasn't.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mt-10 mb-4 dark:text-white">Invoice vs. Quote vs. Service Request</h3>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-sm text-left border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
+                        <thead class="bg-slate-100 dark:bg-slate-800">
+                            <tr>
+                                <th class="p-3 font-bold">Document</th>
+                                <th class="p-3 font-bold">Used When</th>
+                                <th class="p-3 font-bold">Includes Payment?</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <tr><td class="p-3 font-semibold">Invoice</td><td class="p-3">Work is done and payment is due</td><td class="p-3">Yes</td></tr>
+                            <tr><td class="p-3 font-semibold"><a href="quote.html" class="text-emerald-600 hover:underline">Quote</a></td><td class="p-3">Estimating a price before work starts</td><td class="p-3">No — estimate only</td></tr>
+                            <tr><td class="p-3 font-semibold"><a href="request.html" class="text-emerald-600 hover:underline">Service Request</a></td><td class="p-3">A customer is asking for a service</td><td class="p-3">No</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">If you already sent a <a href="quote.html" class="text-emerald-600 hover:underline">quote</a> and the customer accepted, you can convert it into an invoice with one tap once the work is complete.</p>
+            </article>
+
+            <div>
+                <h2 class="text-2xl font-bold mb-6 dark:text-white">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Is this invoice generator really free?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Yes. Creating, downloading and sharing invoices is completely free with no signup required. An optional free account lets you save your invoice history across devices.</p>
+                    </details>
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Can I use this invoice maker on my phone?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Yes, the tool is fully mobile-friendly and works directly in your phone's browser. You can also install it as an app on your home screen.</p>
+                    </details>
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Which currencies and professions are supported?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Over 35 currencies covering the US, Europe, the Gulf, Africa and Asia, and 55+ professions from plumbers and electricians to drivers, IT support and business consultants.</p>
+                    </details>
+                    <details class="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                        <summary class="font-bold cursor-pointer dark:text-white">Can my customer see the invoice after I send it?</summary>
+                        <p class="text-slate-600 dark:text-slate-400 mt-2 text-sm">Yes. When you tap "Save & Get Shareable Link", a unique link is created. Anyone who opens that link sees the exact same invoice, including any status updates you make later.</p>
+                    </details>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap gap-3">
+                <a href="quote.html" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-emerald-50">Try the Quote Generator →</a>
+                <a href="request.html" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-emerald-50">Try the Service Request Tool →</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="no-print bg-slate-950 text-slate-400 py-10 px-4 text-center text-sm">
+        <p>&copy; 2026 QuickQuote Pro. Free invoice, quote and service request generator.</p>
+        <div class="flex justify-center gap-4 mt-3 flex-wrap">
+            <a href="index.html" class="hover:text-white">Home</a>
+            <a href="invoice.html" class="hover:text-white">Invoice</a>
+            <a href="quote.html" class="hover:text-white">Quote</a>
+            <a href="request.html" class="hover:text-white">Request</a>
+            <a href="about.html" class="hover:text-white">About</a>
+            <a href="contact.html" class="hover:text-white">Contact</a>
+            <a href="faq.html" class="hover:text-white">FAQ</a>
+            <a href="privacy-policy.html" class="hover:text-white">Privacy</a>
+            <a href="terms.html" class="hover:text-white">Terms</a>
+        </div>
+    </footer>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
